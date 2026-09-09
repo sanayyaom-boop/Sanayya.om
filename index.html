@@ -1,23 +1,1093 @@
-<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>sanayya.om — Vehicle Damage Check</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body>
-<header><div class="wrap bar"><a class="logo" href="index.html">sanayya<span>.om</span><b class="badge">OMAN</b></a><nav class="nav"><a href="#check" data-i18n="navCheck">Vehicle Check</a><a href="services.html" data-i18n="navServices">Services</a><a href="login.html" data-i18n="navLogin">Login</a><button id="langBtn" class="lang-btn">العربية</button></nav><a class="login" href="login.html" data-i18n="navLogin">Login</a></div></header>
-<main><section class="hero" id="check"><div class="wrap hero-grid"><div><div class="eyebrow" data-i18n="eyebrow">FREE VEHICLE PRE-CHECK · US AUCTION CARS</div><h1 data-i18n-html="headline">Know the damage<br><strong>before you buy.</strong></h1><p class="lede" data-i18n="lede">Enter a VIN or a complete BidCars vehicle link. Sanayya reads the public auction details, then combines them with your photos for a preliminary damage assessment.</p><div class="hero-pills"><span class="pill" data-i18n="pill1">VIN or BidCars</span><span class="pill" data-i18n="pill2">Auction facts</span><span class="pill" data-i18n="pill3">Parts assessment</span><span class="pill" data-i18n="pill4">Structural risk</span></div></div>
-<div class="card"><div class="card-top"><span class="eyebrow" data-i18n="cardEyebrow">SANAYYA CHECK</span><span class="status">FREE</span></div><h2 data-i18n="cardTitle">Check this vehicle</h2><p class="sub" data-i18n="cardSub">Use only a VIN or a complete BidCars vehicle URL. No auction account is needed for the public listing details.</p>
-<div class="field"><label class="label" data-i18n="sourceLabel">VIN or BidCars URL</label><input id="vin" class="input" dir="ltr" autocomplete="off" placeholder="VIN (17 characters) or https://bid.cars/en/..." inputmode="url"></div>
-<div class="input-help" data-i18n="sourceHelp">Accepted: a 17-character VIN or a full vehicle page beginning with https://bid.cars/en/</div>
-<div class="field"><label class="label" data-i18n="photoLabel">Auction photos</label><label class="upload" for="photos"><span class="upload-icon">＋</span><span><b data-i18n="uploadTitle">Add vehicle photos</b><small data-i18n="uploadSub">Front, rear, sides, wheels, cabin and damage areas</small></span><input id="photos" type="file" accept="image/*" multiple hidden></label><div class="photo-meta"><span id="photoCount" data-i18n="noPhotos">No photos selected</span><span data-i18n="photoLimit">Up to 12 photos</span></div><div class="thumbs" id="thumbs"></div></div>
-<button class="btn" id="checkBtn" data-i18n="checkBtn">CHECK VEHICLE — FREE</button><div class="small-note" data-i18n="disclaimer">Auction facts are copied from publicly available BidCars listing data. AI is a preliminary visual assessment only and cannot certify a chassis/frame as safe. Physical inspection is required for confirmation.</div>
-<div class="bidcars-panel hidden" id="bidcarsPanel"></div><div class="report hidden" id="report"></div></div></div></section>
-</main><footer><div class="wrap footer-row"><span>© 2026 sanayya.om</span><span data-i18n="footer">Vehicle pre-check · Physical inspection · Parts · Garages</span></div></footer><div id="toast" class="toast"></div>
-<script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="app.js"></script><script>
-const I18N={en:{navCheck:'Vehicle Check',navServices:'Services',navLogin:'Login',eyebrow:'FREE VEHICLE PRE-CHECK · US AUCTION CARS',headline:'Know the damage<br><strong>before you buy.</strong>',lede:'Enter a VIN or a complete BidCars vehicle link. Sanayya reads the public auction details, then combines them with your photos for a preliminary damage assessment.',pill1:'VIN or BidCars',pill2:'Auction facts',pill3:'Parts assessment',pill4:'Structural risk',cardEyebrow:'SANAYYA CHECK',cardTitle:'Check this vehicle',cardSub:'Use only a VIN or a complete BidCars vehicle URL. No auction account is needed for the public listing details.',sourceLabel:'VIN or BidCars URL',sourceHelp:'Accepted: a 17-character VIN or a full vehicle page beginning with https://bid.cars/en/',photoLabel:'Auction photos',uploadTitle:'Add vehicle photos',uploadSub:'Front, rear, sides, wheels, cabin and damage areas',noPhotos:'No photos selected',photoLimit:'Up to 12 photos',checkBtn:'CHECK VEHICLE — FREE',disclaimer:'Auction facts are copied from publicly available BidCars listing data. AI is a preliminary visual assessment only and cannot certify a chassis/frame as safe. Physical inspection is required for confirmation.',howEyebrow:'WHAT SANAYYA CAN READ',howTitle:'Public auction facts + your photos.',howText:'For a public BidCars vehicle page, Sanayya can display the information published on that page, such as Run and Drive, driveline/drive type, primary and secondary damage, loss type and other vehicle details. It will not invent a flood or fire finding when the public page does not state one.',fact1Title:'Run & Drive',fact1Text:'Start code from the listing',fact2Title:'Driveline',fact2Text:'RWD, FWD, AWD or listed drive line',fact3Title:'Damage',fact3Text:'Primary and secondary damage',fact4Title:'Flood / Fire',fact4Text:'Only when stated in public listing data',afterEyebrow:'AFTER THE CHECK',afterTitle:'The car arrived in Oman? Sanayya handles the next step.',afterText:'Book a physical inspection, request spare parts quotations or send the repair job to registered garages.',service1:'Physical inspection',service1Text:'Inspector visits the yard and creates a verified report with photos, video and visible observations.',service2:'Spare parts',service2Text:'Send the AI or physical report to registered suppliers and compare offers.',service3:'Garages',service3Text:'Send the report to approved garages and compare repair quotations.',footer:'Vehicle pre-check · Physical inspection · Parts · Garages'},ar:{navCheck:'فحص السيارة',navServices:'الخدمات',navLogin:'تسجيل الدخول',eyebrow:'فحص أولي مجاني · سيارات المزادات الأمريكية',headline:'اعرف الضرر<br><strong>قبل أن تشتري.</strong>',lede:'أدخل رقم VIN أو رابطاً كاملاً لسيارة على BidCars. يعرض سنayya بيانات المزاد العامة ثم يدمجها مع صورك لإجراء تقييم أولي للأضرار.',pill1:'VIN أو BidCars',pill2:'بيانات المزاد',pill3:'تقييم القطع',pill4:'مخاطر الهيكل',cardEyebrow:'فحص سنayya',cardTitle:'افحص هذه السيارة',cardSub:'استخدم رقم VIN أو رابطاً كاملاً لصفحة السيارة في BidCars. لا تحتاج إلى حساب مزاد لقراءة البيانات العامة.',sourceLabel:'رقم VIN أو رابط BidCars',sourceHelp:'المقبول: رقم VIN من 17 خانة أو رابط كامل يبدأ بـ https://bid.cars/en/',photoLabel:'صور المزاد',uploadTitle:'أضف صور السيارة',uploadSub:'الأمام والخلف والجوانب والعجلات والمقصورة ومناطق الضرر',noPhotos:'لم يتم اختيار صور',photoLimit:'حتى 12 صورة',checkBtn:'افحص السيارة — مجاناً',disclaimer:'يتم عرض بيانات المزاد المنشورة للعامة في BidCars. الذكاء الاصطناعي يقدم تقييماً بصرياً أولياً ولا يمكنه اعتماد سلامة الشاصي أو الهيكل من الصور. يلزم الفحص الفعلي للتأكيد.',howEyebrow:'ما الذي يمكن لسنayya قراءته؟',howTitle:'بيانات المزاد العامة + صورك.',howText:'عند استخدام صفحة عامة لسيارة في BidCars، يمكن لسنayya عرض البيانات المنشورة فيها مثل Run and Drive ونوع الدفع، والضرر الأساسي والثانوي، ونوع الخسارة وغيرها. ولن يضيف النظام أن السيارة متضررة بالماء أو الحريق إذا لم تذكر الصفحة ذلك.',fact1Title:'Run & Drive',fact1Text:'رمز التشغيل من صفحة المزاد',fact2Title:'نظام الدفع',fact2Text:'دفع أمامي أو خلفي أو AWD حسب الصفحة',fact3Title:'الضرر',fact3Text:'الضرر الأساسي والثانوي',fact4Title:'الماء / الحريق',fact4Text:'فقط إذا كان مذكوراً في بيانات المزاد العامة',afterEyebrow:'بعد الفحص',afterTitle:'وصلت السيارة إلى عُمان؟ سنayya تتولى الخطوة التالية.',afterText:'احجز فحصاً فعلياً أو اطلب عروض أسعار للقطع أو أرسل السيارة إلى الورش المسجلة.',service1:'فحص فعلي',service1Text:'يقوم المفتش بزيارة الساحة وإنشاء تقرير موثق بالصور والفيديو والملاحظات المرئية.',service2:'قطع الغيار',service2Text:'أرسل تقرير الذكاء الاصطناعي أو الفحص الفعلي للموردين وقارن العروض.',service3:'الورش',service3Text:'أرسل التقرير إلى الورش المعتمدة وقارن عروض الإصلاح.',footer:'فحص أولي للسيارة · فحص فعلي · قطع الغيار · الورش'}};
-let lang=localStorage.getItem('sanayya_lang')||'en';
-function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.getElementById('langBtn').textContent=lang==='ar'?'English':'العربية';document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(I18N[lang][k])el.textContent=I18N[lang][k]});document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.dataset.i18nHtml;if(I18N[lang][k])el.innerHTML=I18N[lang][k]});}
-document.getElementById('langBtn').onclick=()=>{lang=lang==='en'?'ar':'en';localStorage.setItem('sanayya_lang',lang);applyLang()};applyLang();
-const photos=document.getElementById('photos'),thumbs=document.getElementById('thumbs'),photoCount=document.getElementById('photoCount');
-photos.addEventListener('change',()=>{thumbs.innerHTML='';const fs=[...photos.files].slice(0,12);photoCount.textContent=fs.length?(lang==='ar'?`${fs.length} صورة مختارة`:`${fs.length} photo${fs.length===1?'':'s'} selected`):(lang==='ar'?'لم يتم اختيار صور':'No photos selected');fs.forEach(f=>{const r=new FileReader();r.onload=e=>{const img=document.createElement('img');img.src=e.target.result;img.alt='';thumbs.appendChild(img)};r.readAsDataURL(f)})});
-function validVin(v){return /^[A-HJ-NPR-Z0-9]{17}$/i.test(v)}
-function validBid(v){return /^https:\/\/bid\.cars\/en\//i.test(v)}
-function renderBid(data){const panel=document.getElementById('bidcarsPanel');panel.classList.remove('hidden');const rows=[['VIN',data.vin],['Lot',data.lot],['Seller',data.seller],['Sale document',data.sale_document],['Loss',data.loss],['Primary damage',data.primary_damage],['Secondary damage',data.secondary_damage],['Start code',data.start_code],['Drive type',data.drive_type],['Driveline',data.driveline],['Odometer',data.odometer],['Key present',data.key_present],['Location',data.location],['Water / flood / fire',data.water_fire_flag]];panel.innerHTML=`<div class="bid-head"><div><b>BidCars public listing</b><span>Details read from the public vehicle page</span></div><a href="${esc(data.source_url)}" target="_blank" rel="noopener">Open BidCars ↗</a></div><div class="bid-title">${esc(data.title||'Vehicle listing')}</div><div class="bid-grid">${rows.filter(x=>x[1]).map(x=>`<div class="bid-row"><span>${esc(x[0])}</span><b>${esc(x[1])}</b></div>`).join('')}</div><div class="small-note">Sanayya displays what the public page states. Missing information is not treated as a negative finding.</div>`}
-async function fetchBidCars(url){const r=await fetch(`${window.SANAYYA_CONFIG.SUPABASE_URL}/functions/v1/fetch-bidcars`,{method:'POST',headers:{'Content-Type':'application/json',apikey:window.SANAYYA_CONFIG.SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify({url})});const j=await r.json();if(!r.ok||!j.ok)throw new Error(j.error||'Could not read the public BidCars page');return j.data}
-document.getElementById('checkBtn').onclick=async()=>{const source=document.getElementById('vin').value.trim();const files=[...photos.files].slice(0,12);if(!source){toast(lang==='ar'?'أدخل رقم VIN أو رابط BidCars.':'Enter a VIN or BidCars URL.',false);return}if(!(validVin(source)||validBid(source))){toast(lang==='ar'?'استخدم VIN من 17 خانة أو رابطاً كاملاً يبدأ بـ https://bid.cars/en/':'Use a 17-character VIN or a complete URL beginning with https://bid.cars/en/',false);return}const btn=document.getElementById('checkBtn');btn.disabled=true;btn.textContent=lang==='ar'?'جارٍ قراءة السيارة...':'READING VEHICLE...';document.getElementById('bidcarsPanel').classList.add('hidden');try{let bid=null;if(validBid(source)){bid=await fetchBidCars(source);renderBid(bid)}else{toast(lang==='ar'?'رقم VIN مقبول. لا توجد صفحة BidCars محددة بعد، لذلك سيتم استخدام VIN مع تحليل الصور.':'VIN accepted. Without a specific BidCars page, the VIN will be used with the photo analysis.',true)}const p=await getProfile();if(p){let vehicleId=null;const vinValue=bid?.vin|| (validVin(source)?source:null);const {data:v,error:ve}=await sb.from('vehicles').insert({user_id:p.id,vin:vinValue,auction_url:validBid(source)?source:null}).select('id').single();if(ve)throw ve;vehicleId=v.id;const {data:check,error:ce}=await sb.from('ai_damage_checks').insert({user_id:p.id,vehicle_id:vehicleId,status:'submitted',input_reference:source,report_json:{bidcars:bid,photo_count:files.length}}).select('id').single();if(ce)throw ce;document.getElementById('report').classList.remove('hidden');document.getElementById('report').innerHTML=`<div class="report-head"><div><b>Sanayya check saved</b><div class="small-note">Reference: SAN-AI-${String(check.id).slice(0,8)}</div></div><div class="score">SAVED</div></div><p class="small-note">${files.length?files.length+' photos selected.':'No photos selected.'} Live Gemini analysis will run after the AI Edge Function is deployed.</p><div class="risk">STRUCTURAL RISK: PHYSICAL INSPECTION REQUIRED</div>`} }catch(e){console.error(e);toast(e.message||'Could not read the vehicle.',false)}finally{btn.disabled=false;btn.textContent=I18N[lang].checkBtn}};
-</script></body></html>
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>sanayya.om — Vehicle Damage Check</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header>
+  <div class="wrap bar">
+
+    <a class="logo" href="index.html">
+      sanayya<span>.om</span><b class="badge">OMAN</b>
+    </a>
+
+    <nav class="nav">
+      <a href="#check" data-i18n="navCheck">Vehicle Check</a>
+      <a href="#services" data-i18n="navServices">Services</a>
+      <a href="login.html" data-i18n="navLogin">Login</a>
+      <button id="langBtn" class="lang-btn">العربية</button>
+    </nav>
+
+    <a class="login" href="login.html" data-i18n="navLogin">Login</a>
+
+  </div>
+</header>
+
+
+<main>
+
+  <!-- =========================
+       AI DAMAGE CHECK
+       ========================= -->
+
+  <section class="hero" id="check">
+
+    <div class="wrap hero-grid">
+
+      <div>
+
+        <div class="eyebrow" data-i18n="eyebrow">
+          FREE VEHICLE PRE-CHECK · US AUCTION CARS
+        </div>
+
+        <h1 data-i18n-html="headline">
+          Know the damage<br>
+          <strong>before you buy.</strong>
+        </h1>
+
+        <p class="lede" data-i18n="lede">
+          Enter a VIN or a complete BidCars vehicle link. Sanayya reads the public auction details, then combines them with your photos for a preliminary damage assessment.
+        </p>
+
+        <div class="hero-pills">
+          <span class="pill" data-i18n="pill1">VIN or BidCars</span>
+          <span class="pill" data-i18n="pill2">Auction facts</span>
+          <span class="pill" data-i18n="pill3">Parts assessment</span>
+          <span class="pill" data-i18n="pill4">Structural risk</span>
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="card-top">
+          <span class="eyebrow" data-i18n="cardEyebrow">SANAYYA CHECK</span>
+          <span class="status">FREE</span>
+        </div>
+
+        <h2 data-i18n="cardTitle">
+          Check this vehicle
+        </h2>
+
+        <p class="sub" data-i18n="cardSub">
+          Use only a VIN or a complete BidCars vehicle URL. No auction account is needed for the public listing details.
+        </p>
+
+
+        <div class="field">
+
+          <label class="label" data-i18n="sourceLabel">
+            VIN or BidCars URL
+          </label>
+
+          <input
+            id="vin"
+            class="input"
+            dir="ltr"
+            autocomplete="off"
+            placeholder="VIN (17 characters) or https://bid.cars/en/..."
+            inputmode="url"
+          >
+
+        </div>
+
+
+        <div class="input-help" data-i18n="sourceHelp">
+          Accepted: a 17-character VIN or a full vehicle page beginning with https://bid.cars/en/
+        </div>
+
+
+        <div class="field">
+
+          <label class="label" data-i18n="photoLabel">
+            Auction photos
+          </label>
+
+          <label class="upload" for="photos">
+
+            <span class="upload-icon">＋</span>
+
+            <span>
+              <b data-i18n="uploadTitle">
+                Add vehicle photos
+              </b>
+
+              <small data-i18n="uploadSub">
+                Front, rear, sides, wheels, cabin and damage areas
+              </small>
+            </span>
+
+            <input
+              id="photos"
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+            >
+
+          </label>
+
+
+          <div class="photo-meta">
+
+            <span id="photoCount" data-i18n="noPhotos">
+              No photos selected
+            </span>
+
+            <span data-i18n="photoLimit">
+              Up to 12 photos
+            </span>
+
+          </div>
+
+
+          <div class="thumbs" id="thumbs"></div>
+
+        </div>
+
+
+        <button
+          class="btn"
+          id="checkBtn"
+          data-i18n="checkBtn"
+        >
+          CHECK VEHICLE — FREE
+        </button>
+
+
+        <div class="small-note" data-i18n="disclaimer">
+          Auction facts are copied from publicly available BidCars listing data. AI is a preliminary visual assessment only and cannot certify a chassis/frame as safe. Physical inspection is required for confirmation.
+        </div>
+
+
+        <div class="bidcars-panel hidden" id="bidcarsPanel"></div>
+
+        <div class="report hidden" id="report"></div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       SERVICES
+       EXACT SERVICES DESIGN
+       ========================= -->
+
+  <section class="page" id="services">
+
+    <div class="wrap">
+
+      <div class="section-head">
+
+        <div class="eyebrow" data-i18n="servicesEyebrow">
+          PAGE 2 · SANAYYA SERVICES
+        </div>
+
+        <h1 data-i18n="servicesTitle">
+          Your car arrived. What next?
+        </h1>
+
+        <p data-i18n="servicesIntro">
+          After the AI pre-check, Sanayya gives you the next practical services in Oman.
+        </p>
+
+      </div>
+
+
+      <div class="services">
+
+
+        <!-- PHYSICAL INSPECTION -->
+
+        <div class="service">
+
+          <div class="icon">
+            🔎
+          </div>
+
+          <span class="tag" id="inspectionPrice">
+            5 OMR
+          </span>
+
+          <h3 data-i18n="inspectionTitle">
+            Physical inspection
+          </h3>
+
+          <p data-i18n="inspectionText">
+            An inspector visits the yard and produces a physical inspection report with photos, video and visible observations.
+          </p>
+
+          <a
+            class="btn"
+            href="login.html"
+            data-i18n="inspectionBtn"
+          >
+            BOOK INSPECTION
+          </a>
+
+        </div>
+
+
+        <!-- SPARE PARTS -->
+
+        <div class="service">
+
+          <div class="icon">
+            🔧
+          </div>
+
+          <span class="tag">
+            FREE REQUEST
+          </span>
+
+          <h3 data-i18n="partsTitle">
+            Spare parts
+          </h3>
+
+          <p data-i18n="partsText">
+            Send a parts request to registered suppliers and compare offers.
+          </p>
+
+          <a
+            class="btn"
+            href="login.html"
+            data-i18n="partsBtn"
+          >
+            REQUEST PARTS
+          </a>
+
+        </div>
+
+
+        <!-- GARAGE REPAIR -->
+
+        <div class="service">
+
+          <div class="icon">
+            🛠
+          </div>
+
+          <span class="tag">
+            QUOTATIONS
+          </span>
+
+          <h3 data-i18n="garageTitle">
+            Garage repair
+          </h3>
+
+          <p data-i18n="garageText">
+            Send the report to registered garages and compare repair quotations.
+          </p>
+
+          <a
+            class="btn"
+            href="login.html"
+            data-i18n="garageBtn"
+          >
+            REQUEST GARAGE QUOTE
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <p
+        class="small-note service-note"
+        data-i18n="priceNote"
+      >
+        Inspection price is set by Sanayya Admin and can be changed later.
+      </p>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer>
+
+  <div class="wrap footer-row">
+
+    <span>
+      © 2026 sanayya.om
+    </span>
+
+    <span data-i18n="footer">
+      Vehicle pre-check · Physical inspection · Parts · Garages
+    </span>
+
+  </div>
+
+</footer>
+
+
+<div id="toast" class="toast"></div>
+
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+
+
+<script>
+
+const I18N = {
+
+  en: {
+
+    navCheck: 'Vehicle Check',
+    navServices: 'Services',
+    navLogin: 'Login',
+
+    eyebrow: 'FREE VEHICLE PRE-CHECK · US AUCTION CARS',
+
+    headline: 'Know the damage<br><strong>before you buy.</strong>',
+
+    lede: 'Enter a VIN or a complete BidCars vehicle link. Sanayya reads the public auction details, then combines them with your photos for a preliminary damage assessment.',
+
+    pill1: 'VIN or BidCars',
+    pill2: 'Auction facts',
+    pill3: 'Parts assessment',
+    pill4: 'Structural risk',
+
+    cardEyebrow: 'SANAYYA CHECK',
+
+    cardTitle: 'Check this vehicle',
+
+    cardSub: 'Use only a VIN or a complete BidCars vehicle URL. No auction account is needed for the public listing details.',
+
+    sourceLabel: 'VIN or BidCars URL',
+
+    sourceHelp: 'Accepted: a 17-character VIN or a full vehicle page beginning with https://bid.cars/en/',
+
+    photoLabel: 'Auction photos',
+
+    uploadTitle: 'Add vehicle photos',
+
+    uploadSub: 'Front, rear, sides, wheels, cabin and damage areas',
+
+    noPhotos: 'No photos selected',
+
+    photoLimit: 'Up to 12 photos',
+
+    checkBtn: 'CHECK VEHICLE — FREE',
+
+    disclaimer: 'Auction facts are copied from publicly available BidCars listing data. AI is a preliminary visual assessment only and cannot certify a chassis/frame as safe. Physical inspection is required for confirmation.',
+
+
+    servicesEyebrow: 'PAGE 2 · SANAYYA SERVICES',
+
+    servicesTitle: 'Your car arrived. What next?',
+
+    servicesIntro: 'After the AI pre-check, Sanayya gives you the next practical services in Oman.',
+
+    inspectionTitle: 'Physical inspection',
+
+    inspectionText: 'An inspector visits the yard and produces a physical inspection report with photos, video and visible observations.',
+
+    inspectionBtn: 'BOOK INSPECTION',
+
+    partsTitle: 'Spare parts',
+
+    partsText: 'Send a parts request to registered suppliers and compare offers.',
+
+    partsBtn: 'REQUEST PARTS',
+
+    garageTitle: 'Garage repair',
+
+    garageText: 'Send the report to registered garages and compare repair quotations.',
+
+    garageBtn: 'REQUEST GARAGE QUOTE',
+
+    priceNote: 'Inspection price is set by Sanayya Admin and can be changed later.',
+
+
+    howEyebrow: 'WHAT SANAYYA CAN READ',
+
+    howTitle: 'Public auction facts + your photos.',
+
+    howText: 'For a public BidCars vehicle page, Sanayya can display the information published on that page, such as Run and Drive, driveline/drive type, primary and secondary damage, loss type and other vehicle details. It will not invent a flood or fire finding when the public page does not state one.',
+
+    fact1Title: 'Run & Drive',
+    fact1Text: 'Start code from the listing',
+
+    fact2Title: 'Driveline',
+    fact2Text: 'RWD, FWD, AWD or listed drive line',
+
+    fact3Title: 'Damage',
+    fact3Text: 'Primary and secondary damage',
+
+    fact4Title: 'Flood / Fire',
+    fact4Text: 'Only when stated in public listing data',
+
+    afterEyebrow: 'AFTER THE CHECK',
+
+    afterTitle: 'The car arrived in Oman? Sanayya handles the next step.',
+
+    afterText: 'Book a physical inspection, request spare parts quotations or send the repair job to registered garages.',
+
+    service1: 'Physical inspection',
+
+    service1Text: 'Inspector visits the yard and creates a verified report with photos, video and visible observations.',
+
+    service2: 'Spare parts',
+
+    service2Text: 'Send the AI or physical report to registered suppliers and compare offers.',
+
+    service3: 'Garages',
+
+    service3Text: 'Send the report to approved garages and compare repair quotations.',
+
+    footer: 'Vehicle pre-check · Physical inspection · Parts · Garages'
+
+  },
+
+
+  ar: {
+
+    navCheck: 'فحص السيارة',
+
+    navServices: 'الخدمات',
+
+    navLogin: 'تسجيل الدخول',
+
+    eyebrow: 'فحص أولي مجاني · سيارات المزادات الأمريكية',
+
+    headline: 'اعرف الضرر<br><strong>قبل أن تشتري.</strong>',
+
+    lede: 'أدخل رقم VIN أو رابطاً كاملاً لسيارة على BidCars. يعرض سنayya بيانات المزاد العامة ثم يدمجها مع صورك لإجراء تقييم أولي للأضرار.',
+
+    pill1: 'VIN أو BidCars',
+
+    pill2: 'بيانات المزاد',
+
+    pill3: 'تقييم القطع',
+
+    pill4: 'مخاطر الهيكل',
+
+    cardEyebrow: 'فحص سنayya',
+
+    cardTitle: 'افحص هذه السيارة',
+
+    cardSub: 'استخدم رقم VIN أو رابطاً كاملاً لصفحة السيارة في BidCars. لا تحتاج إلى حساب مزاد لقراءة البيانات العامة.',
+
+    sourceLabel: 'رقم VIN أو رابط BidCars',
+
+    sourceHelp: 'المقبول: رقم VIN من 17 خانة أو رابط كامل يبدأ بـ https://bid.cars/en/',
+
+    photoLabel: 'صور المزاد',
+
+    uploadTitle: 'أضف صور السيارة',
+
+    uploadSub: 'الأمام والخلف والجوانب والعجلات والمقصورة ومناطق الضرر',
+
+    noPhotos: 'لم يتم اختيار صور',
+
+    photoLimit: 'حتى 12 صورة',
+
+    checkBtn: 'افحص السيارة — مجاناً',
+
+    disclaimer: 'يتم عرض بيانات المزاد المنشورة للعامة في BidCars. الذكاء الاصطناعي يقدم تقييماً بصرياً أولياً ولا يمكنه اعتماد سلامة الشاصي أو الهيكل من الصور. يلزم الفحص الفعلي للتأكيد.',
+
+
+    servicesEyebrow: 'الصفحة الثانية · خدمات سنayya',
+
+    servicesTitle: 'وصلت السيارة. ماذا بعد؟',
+
+    servicesIntro: 'بعد الفحص الأولي بالذكاء الاصطناعي، توفر لك سنayya الخدمات العملية التالية في عُمان.',
+
+    inspectionTitle: 'الفحص الفعلي',
+
+    inspectionText: 'يقوم المفتش بزيارة الساحة وإعداد تقرير فحص فعلي بالصور والفيديو والملاحظات المرئية.',
+
+    inspectionBtn: 'احجز الفحص',
+
+    partsTitle: 'قطع الغيار',
+
+    partsText: 'أرسل طلب قطع الغيار إلى الموردين المسجلين وقارن العروض.',
+
+    partsBtn: 'اطلب قطع الغيار',
+
+    garageTitle: 'إصلاح السيارة',
+
+    garageText: 'أرسل التقرير إلى الورش المسجلة وقارن عروض الإصلاح.',
+
+    garageBtn: 'اطلب عرض ورشة',
+
+    priceNote: 'سعر الفحص يحدده مشرف النظام ويمكن تغييره لاحقاً من لوحة الإدارة.',
+
+
+    howEyebrow: 'ما الذي يمكن لسنayya قراءته؟',
+
+    howTitle: 'بيانات المزاد العامة + صورك.',
+
+    howText: 'عند استخدام صفحة عامة لسيارة في BidCars، يمكن لسنayya عرض البيانات المنشورة فيها مثل Run and Drive ونوع الدفع، والضرر الأساسي والثانوي، ونوع الخسارة وغيرها. ولن يضيف النظام أن السيارة متضررة بالماء أو الحريق إذا لم تذكر الصفحة ذلك.',
+
+    fact1Title: 'Run & Drive',
+
+    fact1Text: 'رمز التشغيل من صفحة المزاد',
+
+    fact2Title: 'نظام الدفع',
+
+    fact2Text: 'دفع أمامي أو خلفي أو AWD حسب الصفحة',
+
+    fact3Title: 'الضرر',
+
+    fact3Text: 'الضرر الأساسي والثانوي',
+
+    fact4Title: 'الماء / الحريق',
+
+    fact4Text: 'فقط إذا كان مذكوراً في بيانات المزاد العامة',
+
+    afterEyebrow: 'بعد الفحص',
+
+    afterTitle: 'وصلت السيارة إلى عُمان؟ سنayya تتولى الخطوة التالية.',
+
+    afterText: 'احجز فحصاً فعلياً أو اطلب عروض أسعار للقطع أو أرسل السيارة إلى الورش المسجلة.',
+
+    service1: 'فحص فعلي',
+
+    service1Text: 'يقوم المفتش بزيارة الساحة وإنشاء تقرير موثق بالصور والفيديو والملاحظات المرئية.',
+
+    service2: 'قطع الغيار',
+
+    service2Text: 'أرسل تقرير الذكاء الاصطناعي أو الفحص الفعلي للموردين وقارن العروض.',
+
+    service3: 'الورش',
+
+    service3Text: 'أرسل التقرير إلى الورش المعتمدة وقارن عروض الإصلاح.',
+
+    footer: 'فحص أولي للسيارة · فحص فعلي · قطع الغيار · الورش'
+
+  }
+
+};
+
+
+let lang = localStorage.getItem('sanayya_lang') || 'en';
+
+
+function applyLang() {
+
+  document.documentElement.lang = lang;
+
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+  document.getElementById('langBtn').textContent =
+    lang === 'ar' ? 'English' : 'العربية';
+
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+
+    const k = el.dataset.i18n;
+
+    if (I18N[lang][k]) {
+      el.textContent = I18N[lang][k];
+    }
+
+  });
+
+
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+
+    const k = el.dataset.i18nHtml;
+
+    if (I18N[lang][k]) {
+      el.innerHTML = I18N[lang][k];
+    }
+
+  });
+
+}
+
+
+document.getElementById('langBtn').onclick = () => {
+
+  lang = lang === 'en' ? 'ar' : 'en';
+
+  localStorage.setItem('sanayya_lang', lang);
+
+  applyLang();
+
+};
+
+
+applyLang();
+
+
+const photos = document.getElementById('photos');
+
+const thumbs = document.getElementById('thumbs');
+
+const photoCount = document.getElementById('photoCount');
+
+
+photos.addEventListener('change', () => {
+
+  thumbs.innerHTML = '';
+
+  const fs = [...photos.files].slice(0, 12);
+
+  photoCount.textContent = fs.length
+    ? (
+        lang === 'ar'
+          ? `${fs.length} صورة مختارة`
+          : `${fs.length} photo${fs.length === 1 ? '' : 's'} selected`
+      )
+    : (
+        lang === 'ar'
+          ? 'لم يتم اختيار صور'
+          : 'No photos selected'
+      );
+
+
+  fs.forEach(f => {
+
+    const r = new FileReader();
+
+    r.onload = e => {
+
+      const img = document.createElement('img');
+
+      img.src = e.target.result;
+
+      img.alt = '';
+
+      thumbs.appendChild(img);
+
+    };
+
+    r.readAsDataURL(f);
+
+  });
+
+});
+
+
+function validVin(v) {
+
+  return /^[A-HJ-NPR-Z0-9]{17}$/i.test(v);
+
+}
+
+
+function validBid(v) {
+
+  return /^https:\/\/bid\.cars\/en\//i.test(v);
+
+}
+
+
+function renderBid(data) {
+
+  const panel = document.getElementById('bidcarsPanel');
+
+  panel.classList.remove('hidden');
+
+
+  const rows = [
+
+    ['VIN', data.vin],
+
+    ['Lot', data.lot],
+
+    ['Seller', data.seller],
+
+    ['Sale document', data.sale_document],
+
+    ['Loss', data.loss],
+
+    ['Primary damage', data.primary_damage],
+
+    ['Secondary damage', data.secondary_damage],
+
+    ['Start code', data.start_code],
+
+    ['Drive type', data.drive_type],
+
+    ['Driveline', data.driveline],
+
+    ['Odometer', data.odometer],
+
+    ['Key present', data.key_present],
+
+    ['Location', data.location],
+
+    ['Water / flood / fire', data.water_fire_flag]
+
+  ];
+
+
+  panel.innerHTML = `
+
+    <div class="bid-head">
+
+      <div>
+
+        <b>BidCars public listing</b>
+
+        <span>Details read from the public vehicle page</span>
+
+      </div>
+
+      <a
+        href="${esc(data.source_url)}"
+        target="_blank"
+        rel="noopener"
+      >
+        Open BidCars ↗
+      </a>
+
+    </div>
+
+
+    <div class="bid-title">
+      ${esc(data.title || 'Vehicle listing')}
+    </div>
+
+
+    <div class="bid-grid">
+
+      ${rows
+        .filter(x => x[1])
+        .map(x => `
+
+          <div class="bid-row">
+
+            <span>${esc(x[0])}</span>
+
+            <b>${esc(x[1])}</b>
+
+          </div>
+
+        `)
+        .join('')}
+
+    </div>
+
+
+    <div class="small-note">
+      Sanayya displays what the public page states. Missing information is not treated as a negative finding.
+    </div>
+
+  `;
+
+}
+
+
+async function fetchBidCars(url) {
+
+  const r = await fetch(
+    `${window.SANAYYA_CONFIG.SUPABASE_URL}/functions/v1/fetch-bidcars`,
+    {
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: window.SANAYYA_CONFIG.SUPABASE_PUBLISHABLE_KEY
+      },
+
+      body: JSON.stringify({ url })
+
+    }
+  );
+
+
+  const j = await r.json();
+
+
+  if (!r.ok || !j.ok) {
+    throw new Error(
+      j.error || 'Could not read the public BidCars page'
+    );
+  }
+
+
+  return j.data;
+
+}
+
+
+document.getElementById('checkBtn').onclick = async () => {
+
+  const source =
+    document.getElementById('vin').value.trim();
+
+
+  const files =
+    [...photos.files].slice(0, 12);
+
+
+  if (!source) {
+
+    toast(
+      lang === 'ar'
+        ? 'أدخل رقم VIN أو رابط BidCars.'
+        : 'Enter a VIN or BidCars URL.',
+      false
+    );
+
+    return;
+
+  }
+
+
+  if (!(validVin(source) || validBid(source))) {
+
+    toast(
+      lang === 'ar'
+        ? 'استخدم VIN من 17 خانة أو رابطاً كاملاً يبدأ بـ https://bid.cars/en/'
+        : 'Use a 17-character VIN or a complete URL beginning with https://bid.cars/en/',
+      false
+    );
+
+    return;
+
+  }
+
+
+  const btn =
+    document.getElementById('checkBtn');
+
+
+  btn.disabled = true;
+
+
+  btn.textContent =
+    lang === 'ar'
+      ? 'جارٍ قراءة السيارة...'
+      : 'READING VEHICLE...';
+
+
+  document
+    .getElementById('bidcarsPanel')
+    .classList
+    .add('hidden');
+
+
+  try {
+
+    let bid = null;
+
+
+    if (validBid(source)) {
+
+      bid = await fetchBidCars(source);
+
+      renderBid(bid);
+
+    } else {
+
+      toast(
+        lang === 'ar'
+          ? 'رقم VIN مقبول. لا توجد صفحة BidCars محددة بعد، لذلك سيتم استخدام VIN مع تحليل الصور.'
+          : 'VIN accepted. Without a specific BidCars page, the VIN will be used with the photo analysis.',
+        true
+      );
+
+    }
+
+
+    const p = await getProfile();
+
+
+    if (p) {
+
+      let vehicleId = null;
+
+
+      const vinValue =
+        bid?.vin ||
+        (validVin(source) ? source : null);
+
+
+      const {
+        data: v,
+        error: ve
+      } = await sb
+        .from('vehicles')
+        .insert({
+          user_id: p.id,
+          vin: vinValue,
+          auction_url: validBid(source)
+            ? source
+            : null
+        })
+        .select('id')
+        .single();
+
+
+      if (ve) throw ve;
+
+
+      vehicleId = v.id;
+
+
+      const {
+        data: check,
+        error: ce
+      } = await sb
+        .from('ai_damage_checks')
+        .insert({
+          user_id: p.id,
+          vehicle_id: vehicleId,
+          status: 'submitted',
+          input_reference: source,
+          report_json: {
+            bidcars: bid,
+            photo_count: files.length
+          }
+        })
+        .select('id')
+        .single();
+
+
+      if (ce) throw ce;
+
+
+      document
+        .getElementById('report')
+        .classList
+        .remove('hidden');
+
+
+      document
+        .getElementById('report')
+        .innerHTML = `
+
+          <div class="report-head">
+
+            <div>
+
+              <b>Sanayya check saved</b>
+
+              <div class="small-note">
+                Reference: SAN-AI-${String(check.id).slice(0, 8)}
+              </div>
+
+            </div>
+
+            <div class="score">
+              SAVED
+            </div>
+
+          </div>
+
+
+          <p class="small-note">
+
+            ${
+              files.length
+                ? files.length + ' photos selected.'
+                : 'No photos selected.'
+            }
+
+            Live Gemini analysis will run after the AI Edge Function is deployed.
+
+          </p>
+
+
+          <div class="risk">
+            STRUCTURAL RISK: PHYSICAL INSPECTION REQUIRED
+          </div>
+
+        `;
+
+    }
+
+
+  } catch (e) {
+
+    console.error(e);
+
+    toast(
+      e.message || 'Could not read the vehicle.',
+      false
+    );
+
+
+  } finally {
+
+    btn.disabled = false;
+
+    btn.textContent =
+      I18N[lang].checkBtn;
+
+  }
+
+};
+
+
+async function loadInspectionPrice() {
+
+  try {
+
+    const {
+      data,
+      error
+    } = await sb
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'inspection_price_omr')
+      .maybeSingle();
+
+
+    if (
+      !error &&
+      data?.value != null
+    ) {
+
+      const n =
+        Number(data.value);
+
+
+      if (Number.isFinite(n)) {
+
+        document.getElementById(
+          'inspectionPrice'
+        ).textContent =
+          (
+            Number.isInteger(n)
+              ? n
+              : n
+                .toFixed(2)
+                .replace(/0+$/, '')
+                .replace(/\.$/, '')
+          ) + ' OMR';
+
+      }
+
+    }
+
+
+  } catch (e) {
+
+    console.warn(e);
+
+  }
+
+}
+
+
+loadInspectionPrice();
+
+</script>
+
+</body>
+</html>
