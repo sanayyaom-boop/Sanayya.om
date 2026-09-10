@@ -1,5 +1,5 @@
 <!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>sanayya.om — Vehicle Damage Check</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body>
-<header><div class="wrap bar"><a class="logo" href="index.html">sanayya<span>.om</span><b class="badge">OMAN</b></a><nav class="nav"><a href="#check" data-i18n="navCheck">Vehicle Check</a><a href="services.html" data-i18n="navServices">Services</a><a href="login.html" data-i18n="navLogin">Login</a><button id="langBtn" class="lang-btn">العربية</button></nav><a class="login" href="login.html" data-i18n="navLogin">Login</a></div></header>
+<header><div class="wrap bar"><a class="logo" href="index.html">sanayya<span>.om</span><b class="badge">OMAN</b></a><nav class="nav"><a href="#check" data-i18n="navCheck">Vehicle Check</a><a href="#services" data-i18n="navServices">Services</a><a href="login.html" data-i18n="navLogin">Login / Create account</a><button id="langBtn" class="lang-btn">العربية</button></nav><a class="login" href="login.html" data-i18n="navLogin">Login / Create account</a></div></header>
 <main><section class="hero" id="check"><div class="wrap hero-grid"><div><div class="eyebrow" data-i18n="eyebrow">FREE VEHICLE PRE-CHECK · US AUCTION CARS</div><h1 data-i18n-html="headline">Know the damage<br><strong>before you buy.</strong></h1><p class="lede" data-i18n="lede">Enter a VIN or a complete BidCars vehicle link. Sanayya reads the public auction details and uses Gemini AI to analyze your photos for a preliminary damage assessment.</p><div class="hero-pills"><span class="pill" data-i18n="pill1">VIN or BidCars</span><span class="pill" data-i18n="pill2">Auction facts</span><span class="pill" data-i18n="pill3">Parts assessment</span><span class="pill" data-i18n="pill4">Structural risk</span></div></div>
 <div class="card"><div class="card-top"><span class="eyebrow" data-i18n="cardEyebrow">SANAYYA CHECK</span><span class="status">FREE</span></div><h2 data-i18n="cardTitle">Check this vehicle</h2><p class="sub" data-i18n="cardSub">Use only a VIN or a complete BidCars vehicle URL. No auction account is needed for the public listing details.</p>
 <div class="field"><label class="label" data-i18n="sourceLabel">VIN or BidCars URL</label><input id="vin" class="input" dir="ltr" autocomplete="off" placeholder="VIN (17 characters) or https://bid.cars/en/..." inputmode="url"></div>
@@ -7,12 +7,170 @@
 <div class="field"><label class="label" data-i18n="photoLabel">Auction photos</label><label class="upload" for="photos"><span class="upload-icon">＋</span><span><b data-i18n="uploadTitle">Add vehicle photos</b><small data-i18n="uploadSub">Front, rear, sides, wheels, cabin and damage areas</small></span><input id="photos" type="file" accept="image/*" multiple hidden></label><div class="photo-meta"><span id="photoCount" data-i18n="noPhotos">No photos selected</span><span data-i18n="photoLimit">Up to 12 photos</span></div><div class="thumbs" id="thumbs"></div></div>
 <button class="btn" id="checkBtn" data-i18n="checkBtn">CHECK VEHICLE — FREE</button><div class="small-note" data-i18n="disclaimer">Auction facts are copied from publicly available BidCars listing data. AI is a preliminary visual assessment only and cannot certify a chassis/frame as safe. Physical inspection is required for confirmation.</div>
 <div class="bidcars-panel hidden" id="bidcarsPanel"></div><div class="report hidden" id="report"></div></div></div></section>
-</main><footer><div class="wrap footer-row"><span>© 2026 sanayya.om</span><span data-i18n="footer">Vehicle pre-check · Physical inspection · Parts · Garages</span></div></footer><div id="toast" class="toast"></div>
-<script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="app.js"></script><script>
-const I18N={en:{navCheck:'Vehicle Check',navServices:'Services',navLogin:'Login',eyebrow:'FREE VEHICLE PRE-CHECK · US AUCTION CARS',headline:'Know the damage<br><strong>before you buy.</strong>',lede:'Enter a VIN or a complete BidCars vehicle link. Sanayya reads the public auction details and uses Gemini AI to analyze your photos for a preliminary damage assessment.',pill1:'VIN or BidCars',pill2:'Auction facts',pill3:'Parts assessment',pill4:'Structural risk',cardEyebrow:'SANAYYA CHECK',cardTitle:'Check this vehicle',cardSub:'Use only a VIN or a complete BidCars vehicle URL. No auction account is needed for the public listing details.',sourceLabel:'VIN or BidCars URL',sourceHelp:'Accepted: a 17-character VIN or a full vehicle page beginning with https://bid.cars/en/',photoLabel:'Auction photos',uploadTitle:'Add vehicle photos',uploadSub:'Front, rear, sides, wheels, cabin and damage areas',noPhotos:'No photos selected',photoLimit:'Up to 12 photos',checkBtn:'CHECK VEHICLE — FREE',disclaimer:'Auction facts are copied from publicly available BidCars listing data. AI is a preliminary visual assessment only and cannot certify a chassis/frame as safe. Physical inspection is required for confirmation.',howEyebrow:'WHAT SANAYYA CAN READ',howTitle:'Public auction facts + your photos.',howText:'For a public BidCars vehicle page, Sanayya can display the information published on that page, such as Run and Drive, driveline/drive type, primary and secondary damage, loss type and other vehicle details. It will not invent a flood or fire finding when the public page does not state one.',fact1Title:'Run & Drive',fact1Text:'Start code from the listing',fact2Title:'Driveline',fact2Text:'RWD, FWD, AWD or listed drive line',fact3Title:'Damage',fact3Text:'Primary and secondary damage',fact4Title:'Flood / Fire',fact4Text:'Only when stated in public listing data',afterEyebrow:'AFTER THE CHECK',afterTitle:'The car arrived in Oman? Sanayya handles the next step.',afterText:'Book a physical inspection, request spare parts quotations or send the repair job to registered garages.',service1:'Physical inspection',service1Text:'Inspector visits the yard and creates a verified report with photos, video and visible observations.',service2:'Spare parts',service2Text:'Send the AI or physical report to registered suppliers and compare offers.',service3:'Garages',service3Text:'Send the report to approved garages and compare repair quotations.',footer:'Vehicle pre-check · Physical inspection · Parts · Garages'},ar:{navCheck:'فحص السيارة',navServices:'الخدمات',navLogin:'تسجيل الدخول',eyebrow:'فحص أولي مجاني · سيارات المزادات الأمريكية',headline:'اعرف الضرر<br><strong>قبل أن تشتري.</strong>',lede:'أدخل رقم VIN أو رابطاً كاملاً لسيارة على BidCars. يعرض سنayya بيانات المزاد العامة ويستخدم Gemini AI لتحليل صورك وإجراء تقييم أولي للأضرار.',pill1:'VIN أو BidCars',pill2:'بيانات المزاد',pill3:'تقييم القطع',pill4:'مخاطر الهيكل',cardEyebrow:'فحص سنayya',cardTitle:'افحص هذه السيارة',cardSub:'استخدم رقم VIN أو رابطاً كاملاً لصفحة السيارة في BidCars. لا تحتاج إلى حساب مزاد لقراءة البيانات العامة.',sourceLabel:'رقم VIN أو رابط BidCars',sourceHelp:'المقبول: رقم VIN من 17 خانة أو رابط كامل يبدأ بـ https://bid.cars/en/',photoLabel:'صور المزاد',uploadTitle:'أضف صور السيارة',uploadSub:'الأمام والخلف والجوانب والعجلات والمقصورة ومناطق الضرر',noPhotos:'لم يتم اختيار صور',photoLimit:'حتى 12 صورة',checkBtn:'افحص السيارة — مجاناً',disclaimer:'يتم عرض بيانات المزاد المنشورة للعامة في BidCars. الذكاء الاصطناعي يقدم تقييماً بصرياً أولياً ولا يمكنه اعتماد سلامة الشاصي أو الهيكل من الصور. يلزم الفحص الفعلي للتأكيد.',howEyebrow:'ما الذي يمكن لسنayya قراءته؟',howTitle:'بيانات المزاد العامة + صورك.',howText:'عند استخدام صفحة عامة لسيارة في BidCars، يمكن لسنayya عرض البيانات المنشورة فيها مثل Run and Drive ونوع الدفع، والضرر الأساسي والثانوي، ونوع الخسارة وغيرها. ولن يضيف النظام أن السيارة متضررة بالماء أو الحريق إذا لم تذكر الصفحة ذلك.',fact1Title:'Run & Drive',fact1Text:'رمز التشغيل من صفحة المزاد',fact2Title:'نظام الدفع',fact2Text:'دفع أمامي أو خلفي أو AWD حسب الصفحة',fact3Title:'الضرر',fact3Text:'الضرر الأساسي والثانوي',fact4Title:'الماء / الحريق',fact4Text:'فقط إذا كان مذكوراً في بيانات المزاد العامة',afterEyebrow:'بعد الفحص',afterTitle:'وصلت السيارة إلى عُمان؟ سنayya تتولى الخطوة التالية.',afterText:'احجز فحصاً فعلياً أو اطلب عروض أسعار للقطع أو أرسل السيارة إلى الورش المسجلة.',service1:'فحص فعلي',service1Text:'يقوم المفتش بزيارة الساحة وإنشاء تقرير موثق بالصور والفيديو والملاحظات المرئية.',service2:'قطع الغيار',service2Text:'أرسل تقرير الذكاء الاصطناعي أو الفحص الفعلي للموردين وقارن العروض.',service3:'الورش',service3Text:'أرسل التقرير إلى الورش المعتمدة وقارن عروض الإصلاح.',footer:'فحص أولي للسيارة · فحص فعلي · قطع الغيار · الورش'}};
+
+<section class="page account-section" id="account-flow">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="accountEyebrow">CUSTOMER ACCOUNT · EASY LOGIN</div>
+      <h1 data-i18n="accountTitle">Create an account and manage your car</h1>
+      <p data-i18n="accountIntro">Use a simple phone OTP or email login. Your AI reports, inspections and quotation requests stay together in one customer account.</p>
+    </div>
+    <div class="account-cta-grid">
+      <div class="service account-cta"><div class="icon">📱</div><h3 data-i18n="phoneLoginTitle">Phone / OTP login</h3><p data-i18n="phoneLoginText">Fast customer login using a verified phone number. WhatsApp can be used for communication and notifications.</p><a class="btn" href="login.html" data-i18n="createAccountBtn">CREATE ACCOUNT / LOGIN</a></div>
+      <div class="service account-cta"><div class="icon">💬</div><h3 data-i18n="whatsappTitle">WhatsApp support</h3><p data-i18n="whatsappText">Customers can receive request updates and share the vehicle or report link through WhatsApp after the account is created.</p><a class="btn" href="login.html" data-i18n="openAccountBtn">OPEN MY ACCOUNT</a></div>
+    </div>
+    <div class="flow-box">
+      <h2 data-i18n="flowTitle">Recommended Sanayya journey</h2>
+      <div class="flow-grid">
+        <div class="flow-step"><b>1</b><strong data-i18n="flow1">AI damage check</strong><span data-i18n="flow1t">Check VIN/photos before buying or shipping.</span></div>
+        <div class="flow-step"><b>2</b><strong data-i18n="flow2">Physical inspection</strong><span data-i18n="flow2t">If you need more certainty, Sanayya recommends an Oman inspection.</span></div>
+        <div class="flow-step"><b>3</b><strong data-i18n="flow3">Parts quotation</strong><span data-i18n="flow3t">After inspection, request parts offers using the report and part photos.</span></div>
+        <div class="flow-step"><b>4</b><strong data-i18n="flow4">Garage quotation</strong><span data-i18n="flow4t">Send the report, vehicle details and requested work to garages.</span></div>
+      </div>
+      <p class="small-note" data-i18n="flowNote">If a customer asks for parts or a garage quote without enough evidence, Sanayya can recommend a physical inspection first. If the customer already has clear photos, a parts list or a quotation, the request can proceed directly for quotation.</p>
+    </div>
+  </div>
+</section>
+<section class="page services-section" id="services"><div class="wrap"><div class="section-head"><div class="eyebrow" data-i18n="servicesEyebrow">PAGE 2 · SANAYYA SERVICES</div><h1 data-i18n="servicesTitle">Your car arrived. What next?</h1><p data-i18n="servicesIntro">After the AI pre-check, Sanayya gives you the next practical services in Oman.</p></div><div class="services"><div class="service"><div class="icon">🔎</div><span class="tag" id="inspectionPrice">5 OMR</span><h3 data-i18n="inspectionTitle">Physical inspection</h3><p data-i18n="inspectionText">An inspector visits the yard and produces a physical inspection report with photos, video and visible observations.</p><a class="btn" href="login.html" data-i18n="inspectionBtn">BOOK INSPECTION</a></div><div class="service"><div class="icon">🔧</div><span class="tag">FREE REQUEST</span><h3 data-i18n="partsTitle">Spare parts</h3><p data-i18n="partsText">Request spare-parts quotations only after a physical inspection, or when you already have your own parts list and supporting photos/quotation.</p><a class="btn" href="login.html" data-i18n="partsBtn">REQUEST PARTS</a></div><div class="service"><div class="icon">🛠</div><span class="tag">QUOTATIONS</span><h3 data-i18n="garageTitle">Garage repair</h3><p data-i18n="garageText">Request repair quotations from registered garages using your vehicle details, photos, AI report or inspection report.</p><a class="btn" href="login.html" data-i18n="garageBtn">REQUEST GARAGE QUOTE</a></div></div><p class="small-note service-note" data-i18n="priceNote">Inspection price is set by Sanayya Admin and can be changed later.</p></div></section></main>
+<section class="page customer-flow-section" id="customer-flow">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">CUSTOMER WORKFLOW</div>
+      <h1>One simple process from checking to quotation.</h1>
+      <p class="muted">The AI check is only a preliminary damage assessment. It does not create a spare-parts quotation.</p>
+    </div>
+
+    <div class="flow-box">
+      <div class="flow-grid">
+        <div class="flow-step">
+          <b>1</b><strong>AI damage check</strong>
+          <span>Check the VIN/BidCars link and vehicle photos before buying or shipping.</span>
+        </div>
+        <div class="flow-step">
+          <b>2</b><strong>Physical inspection</strong>
+          <span>After the car arrives in Oman, book an inspection when you need verified physical findings.</span>
+        </div>
+        <div class="flow-step">
+          <b>3</b><strong>Spare-parts quotation</strong>
+          <span>Use your physical inspection report, or submit your own parts list with supporting photos/quotation.</span>
+        </div>
+        <div class="flow-step">
+          <b>4</b><strong>Garage quotation</strong>
+          <span>Send the vehicle details, photos and AI/inspection report to registered garages.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="workflow">
+      <section class="panel">
+        <h2>🔎 Physical inspection</h2>
+        <p class="muted">Recommended when the customer wants confirmation of damage, chassis, pillars, suspension, hidden areas or parts condition.</p>
+        <a class="btn" href="#services">BOOK PHYSICAL INSPECTION</a>
+      </section>
+
+      <section class="panel">
+        <h2>🔧 Spare-parts quotation</h2>
+        <div class="notice">
+          <strong>Important:</strong> Sanayya will not turn the AI damage report into an automatic parts order.
+          The customer must have a physical inspection report <strong>or</strong> their own parts list with supporting evidence.
+        </div>
+        <form class="flow-form" onsubmit="return prepareCustomerRequest('parts')">
+          <label class="label">Vehicle model / year</label>
+          <input id="partsModel" class="input" placeholder="Example: Toyota Camry 2022" required>
+          <label class="label">VIN</label>
+          <input id="partsVin" class="input" placeholder="17-character VIN">
+          <label class="label">Your parts list</label>
+          <textarea id="partsReq" placeholder="Example: right front fender, right headlight, grille..." required></textarea>
+          <label class="label">Supporting pictures</label>
+          <div class="upload-mini">
+            <input id="partsPhotos" type="file" accept="image/*" multiple>
+            <div class="small-note">Car picture, parts picture, damage picture or existing quotation picture.</div>
+          </div>
+          <label class="label">Do you already have a physical inspection report?</label>
+          <select id="partsInspection" class="input">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+          <button class="btn" type="submit">REQUEST PARTS QUOTATIONS</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>🛠 Garage quotation</h2>
+        <p class="muted">The customer can request garage quotations using the AI report, physical inspection report, vehicle photos or their own repair requirements.</p>
+        <form class="flow-form" onsubmit="return prepareCustomerRequest('garage')">
+          <label class="label">Vehicle model / year</label>
+          <input id="garageModel" class="input" placeholder="Example: Toyota Camry 2022" required>
+          <label class="label">Requested repair work</label>
+          <textarea id="garageReq" placeholder="Describe the repair work you want quoted." required></textarea>
+          <label class="label">Supporting pictures</label>
+          <div class="upload-mini">
+            <input id="garagePhotos" type="file" accept="image/*" multiple>
+            <div class="small-note">Car picture, damage picture or existing quotation picture.</div>
+          </div>
+          <button class="btn" type="submit">REQUEST GARAGE QUOTATIONS</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>🔗 Share vehicle with a garage</h2>
+        <p class="muted">After an AI check, the customer can share the BidCars/vehicle link with a garage. The garage can review the vehicle information before preparing a quote.</p>
+        <div class="share-box">
+          AI damage information is for preliminary assessment only. A garage should not treat it as a verified physical inspection.
+        </div>
+        <a class="btn" style="margin-top:12px;text-decoration:none;display:inline-block" href="#check">OPEN AI CHECK</a>
+      </section>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap footer-row"><span>© 2026 sanayya.om</span><span data-i18n="footer">Vehicle pre-check · Physical inspection · Parts · Garages</span></div></footer><div id="toast" class="toast"></div>
+<script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="app.js"></script><style>
+
+.account-section{padding:85px 0;background:#f8fbff;min-height:auto}.account-cta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.account-cta{box-shadow:none}.flow-box{margin-top:28px;border:1px solid #dbe4ef;border-radius:18px;padding:26px;background:#fff}.flow-box h2{margin:0 0 18px;color:#071a2d}.flow-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.flow-step{border:1px solid #dbe4ef;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:7px}.flow-step b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#eef5ff;color:#0f6fdc;font-weight:800}.flow-step strong{color:#071a2d}.flow-step span{color:#64748b;font-size:13px;line-height:1.55}@media(max-width:900px){.flow-grid{grid-template-columns:1fr 1fr}}@media(max-width:640px){.account-cta-grid,.flow-grid{grid-template-columns:1fr}.account-section{padding:65px 0}}
+.report{direction:inherit}
+.report h3{font-weight:800;margin-top:26px;color:#071a2d}
+.report .bid-grid{gap:10px}
+.report .bid-row{position:relative}
+.report .part-name{display:block;font-weight:800;color:#071a2d;font-size:15px;line-height:1.35;margin-bottom:5px;background:#eef5ff;border-radius:8px;padding:7px 9px}
+.report .part-status{display:inline-block;font-weight:800;font-size:15px;margin-bottom:5px}.report h4{font-weight:800;margin:18px 0 10px;color:#071a2d}.report .part-group{margin-top:8px}.report .replace-group h4{color:#b91c1c}.report .repair-group h4{color:#b45309}.report .ok-group h4{color:#15803d}.report .unknown-group h4{color:#475569}.report .replace-group .part-name{background:#fee2e2;border:1px solid #fecaca}.report .repair-group .part-name{background:#fff7ed;border:1px solid #fed7aa}.report .ok-group .part-name{background:#ecfdf5;border:1px solid #bbf7d0}.report .unknown-group .part-name{background:#f1f5f9;border:1px solid #cbd5e1}.report .structural-item .part-name{background:#fee2e2;border:1px solid #fecaca;color:#991b1b}.report .structural-item b{display:block;font-weight:800;color:#7f1d1d;line-height:1.45}.report .scan-state{display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:12px;background:#eef5ff;font-weight:800;margin-top:14px}.report .scan-spinner{width:18px;height:18px;border:3px solid #cbd5e1;border-top-color:#0f6fdc;border-radius:50%;animation:sanayyaSpin .8s linear infinite}@keyframes sanayyaSpin{to{transform:rotate(360deg)}}
+.report .status-ok{color:#15803d}
+.report .status-repair{color:#b45309}
+.report .status-replace{color:#b91c1c}
+.report .status-unknown{color:#475569}
+.report .risk{font-weight:800}
+.report .risk-risk{background:#fee2e2!important;color:#b91c1c!important;border:1px solid #fecaca}
+.report .risk-possible{background:#fee2e2!important;color:#b91c1c!important;border:1px solid #fecaca}
+.report .risk-low{background:#dcfce7!important;color:#166534!important;border:1px solid #bbf7d0}
+.report .risk-unknown{background:#f1f5f9!important;color:#475569!important;border:1px solid #e2e8f0}
+.report .pdf-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.report .pdf-btn{border:0;border-radius:10px;padding:12px 16px;font-weight:800;cursor:pointer;background:#0f6fdc;color:#fff}
+.report .pdf-btn:hover{opacity:.92}
+.report-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
+.report-photos img{width:100%;height:220px;object-fit:cover;border-radius:10px;border:1px solid #dbe4ef}
+@media(max-width:640px){.report-photos{grid-template-columns:1fr}.report-photos img{height:auto;max-height:320px}}
+
+.services-section{min-height:100vh;padding:90px 0 110px;background:#fff;}
+.services-section .section-head{margin-bottom:34px;}
+.services-section .section-head h1{margin:8px 0 12px;}
+.services-section .section-head p{max-width:720px;}
+.services{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;}
+.service{border:1px solid #dbe4ef;border-radius:18px;padding:28px;background:#fff;box-shadow:0 8px 24px rgba(7,26,45,.05);display:flex;flex-direction:column;}
+.service .icon{font-size:30px;margin-bottom:14px;}
+.service .tag{display:inline-block;align-self:flex-start;padding:6px 10px;border-radius:999px;background:#eef5ff;color:#0f6fdc;font-weight:800;font-size:12px;margin-bottom:14px;}
+.service h3{font-size:22px;margin:0 0 10px;font-weight:800;color:#071a2d;}
+.service p{color:#64748b;line-height:1.7;margin:0 0 22px;}
+.service .btn{margin-top:auto;text-align:center;text-decoration:none;}
+.service-note{text-align:center;margin-top:22px;}
+.report .clear-btn{border:1px solid #cbd5e1;background:#fff;color:#071a2d;border-radius:10px;padding:12px 16px;font-weight:800;cursor:pointer;}
+.report .clear-btn:hover{background:#f8fafc;}
+@media(max-width:900px){.services{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.services-section{padding:70px 0 90px}.services{grid-template-columns:1fr;}}
+</style><script>
+const I18N={en:{navCheck:'Vehicle Check',navServices:'Services',navLogin:'Login / Create account',accountEyebrow:'CUSTOMER ACCOUNT · EASY LOGIN',accountTitle:'Create an account and manage your car',accountIntro:'Use a simple phone OTP or email login. Your AI reports, inspections and quotation requests stay together in one customer account.',phoneLoginTitle:'Phone / OTP login',phoneLoginText:'Fast customer login using a verified phone number. WhatsApp can be used for communication and notifications.',createAccountBtn:'CREATE ACCOUNT / LOGIN',whatsappTitle:'WhatsApp support',whatsappText:'Customers can receive request updates and share the vehicle or report link through WhatsApp after the account is created.',openAccountBtn:'OPEN MY ACCOUNT',flowTitle:'Recommended Sanayya journey',flow1:'AI damage check',flow1t:'Check VIN/photos before buying or shipping.',flow2:'Physical inspection',flow2t:'If you need more certainty, Sanayya recommends an Oman inspection.',flow3:'Parts quotation',flow3t:'After inspection, request parts offers using the report and part photos.',flow4:'Garage quotation',flow4t:'Send the report, vehicle details and requested work to garages.',flowNote:'If a customer asks for parts or a garage quote without enough evidence, Sanayya can recommend a physical inspection first. If the customer already has clear photos, a parts list or a quotation, the request can proceed directly for quotation.',eyebrow:'FREE VEHICLE PRE-CHECK · US AUCTION CARS',headline:'Know the damage<br><strong>before you buy.</strong>',lede:'Enter a VIN or a complete BidCars vehicle link. Sanayya reads the public auction details and uses Gemini AI to analyze your photos for a preliminary damage assessment.',pill1:'VIN or BidCars',pill2:'Auction facts',pill3:'Parts assessment',pill4:'Structural risk',cardEyebrow:'SANAYYA CHECK',cardTitle:'Check this vehicle',cardSub:'Use only a VIN or a complete BidCars vehicle URL. No auction account is needed for the public listing details.',sourceLabel:'VIN or BidCars URL',sourceHelp:'Accepted: a 17-character VIN or a full vehicle page beginning with https://bid.cars/en/',photoLabel:'Auction photos',uploadTitle:'Add vehicle photos',uploadSub:'Front, rear, sides, wheels, cabin and damage areas',noPhotos:'No photos selected',photoLimit:'Up to 12 photos',checkBtn:'CHECK VEHICLE — FREE',disclaimer:'Auction facts are copied from publicly available BidCars listing data. AI is a preliminary visual assessment only and cannot certify a chassis/frame as safe. Physical inspection is required for confirmation.',howEyebrow:'WHAT SANAYYA CAN READ',howTitle:'Public auction facts + your photos.',howText:'For a public BidCars vehicle page, Sanayya can display the information published on that page, such as Run and Drive, driveline/drive type, primary and secondary damage, loss type and other vehicle details. It will not invent a flood or fire finding when the public page does not state one.',fact1Title:'Run & Drive',fact1Text:'Start code from the listing',fact2Title:'Driveline',fact2Text:'RWD, FWD, AWD or listed drive line',fact3Title:'Damage',fact3Text:'Primary and secondary damage',fact4Title:'Flood / Fire',fact4Text:'Only when stated in public listing data',afterEyebrow:'AFTER THE CHECK',afterTitle:'The car arrived in Oman? Sanayya handles the next step.',afterText:'Book a physical inspection, request spare parts quotations or send the repair job to registered garages.',service1:'Physical inspection',service1Text:'Inspector visits the yard and creates a verified report with photos, video and visible observations.',service2:'Spare parts',service2Text:'Send the AI or physical report to registered suppliers and compare offers.',service3:'Garages',service3Text:'Send the report to approved garages and compare repair quotations.',footer:'Vehicle pre-check · Physical inspection · Parts · Garages',servicesEyebrow:'PAGE 2 · SANAYYA SERVICES',servicesTitle:'Your car arrived. What next?',servicesIntro:'After the AI pre-check, Sanayya gives you the next practical services in Oman.',inspectionTitle:'Physical inspection',inspectionText:'An inspector visits the yard and produces a physical inspection report with photos, video and visible observations.',inspectionBtn:'BOOK INSPECTION',partsTitle:'Spare parts',partsText:'Request spare-parts quotations only after a physical inspection, or when you already have your own parts list and supporting photos/quotation.',partsBtn:'REQUEST PARTS',garageTitle:'Garage repair',garageText:'Request repair quotations from registered garages using your vehicle details, photos, AI report or inspection report.',garageBtn:'REQUEST GARAGE QUOTE',priceNote:'Inspection price is set by Sanayya Admin and can be changed later.'},ar:{navCheck:'فحص السيارة',navServices:'الخدمات',navLogin:'تسجيل الدخول / إنشاء حساب',accountEyebrow:'حساب العميل · تسجيل سهل',accountTitle:'أنشئ حساباً وأدر سيارتك',accountIntro:'استخدم رمز تحقق للهاتف أو البريد الإلكتروني. تبقى تقارير الذكاء الاصطناعي والفحوصات وطلبات عروض الأسعار في حساب واحد.',phoneLoginTitle:'تسجيل الهاتف / رمز التحقق',phoneLoginText:'تسجيل سريع للعميل باستخدام رقم هاتف موثق. ويمكن استخدام واتساب للتواصل والتنبيهات.',createAccountBtn:'إنشاء حساب / تسجيل الدخول',whatsappTitle:'دعم واتساب',whatsappText:'يمكن للعميل استلام تحديثات الطلبات ومشاركة رابط السيارة أو التقرير عبر واتساب بعد إنشاء الحساب.',openAccountBtn:'فتح حسابي',flowTitle:'رحلة سنayya المقترحة',flow1:'فحص أضرار بالذكاء الاصطناعي',flow1t:'افحص رقم VIN والصور قبل الشراء أو الشحن.',flow2:'الفحص الفعلي',flow2t:'إذا كنت تحتاج إلى تأكيد أكبر، يقترح سنayya فحصاً فعلياً في عُمان.',flow3:'عرض أسعار القطع',flow3t:'بعد الفحص، اطلب عروض قطع الغيار باستخدام التقرير وصور القطع.',flow4:'عرض الورشة',flow4t:'أرسل التقرير وبيانات السيارة والعمل المطلوب إلى الورش.',flowNote:'إذا طلب العميل قطعاً أو عرض ورشة دون أدلة كافية، يمكن لسنayya اقتراح الفحص الفعلي أولاً. وإذا كانت لديه صور واضحة أو قائمة قطع أو عرض أسعار، يمكن إرسال الطلب مباشرة للحصول على عروض.',eyebrow:'فحص أولي مجاني · سيارات المزادات الأمريكية',headline:'اعرف الضرر<br><strong>قبل أن تشتري.</strong>',lede:'أدخل رقم VIN أو رابطاً كاملاً لسيارة على BidCars. يعرض سنayya بيانات المزاد العامة ويستخدم Gemini AI لتحليل صورك وإجراء تقييم أولي للأضرار.',pill1:'VIN أو BidCars',pill2:'بيانات المزاد',pill3:'تقييم القطع',pill4:'مخاطر الهيكل',cardEyebrow:'فحص سنayya',cardTitle:'افحص هذه السيارة',cardSub:'استخدم رقم VIN أو رابطاً كاملاً لصفحة السيارة في BidCars. لا تحتاج إلى حساب مزاد لقراءة البيانات العامة.',sourceLabel:'رقم VIN أو رابط BidCars',sourceHelp:'المقبول: رقم VIN من 17 خانة أو رابط كامل يبدأ بـ https://bid.cars/en/',photoLabel:'صور المزاد',uploadTitle:'أضف صور السيارة',uploadSub:'الأمام والخلف والجوانب والعجلات والمقصورة ومناطق الضرر',noPhotos:'لم يتم اختيار صور',photoLimit:'حتى 12 صورة',checkBtn:'افحص السيارة — مجاناً',disclaimer:'يتم عرض بيانات المزاد المنشورة للعامة في BidCars. الذكاء الاصطناعي يقدم تقييماً بصرياً أولياً ولا يمكنه اعتماد سلامة الشاصي أو الهيكل من الصور. يلزم الفحص الفعلي للتأكيد.',howEyebrow:'ما الذي يمكن لسنayya قراءته؟',howTitle:'بيانات المزاد العامة + صورك.',howText:'عند استخدام صفحة عامة لسيارة في BidCars، يمكن لسنayya عرض البيانات المنشورة فيها مثل Run and Drive ونوع الدفع، والضرر الأساسي والثانوي، ونوع الخسارة وغيرها. ولن يضيف النظام أن السيارة متضررة بالماء أو الحريق إذا لم تذكر الصفحة ذلك.',fact1Title:'Run & Drive',fact1Text:'رمز التشغيل من صفحة المزاد',fact2Title:'نظام الدفع',fact2Text:'دفع أمامي أو خلفي أو AWD حسب الصفحة',fact3Title:'الضرر',fact3Text:'الضرر الأساسي والثانوي',fact4Title:'الماء / الحريق',fact4Text:'فقط إذا كان مذكوراً في بيانات المزاد العامة',afterEyebrow:'بعد الفحص',afterTitle:'وصلت السيارة إلى عُمان؟ سنayya تتولى الخطوة التالية.',afterText:'احجز فحصاً فعلياً أو اطلب عروض أسعار للقطع أو أرسل السيارة إلى الورش المسجلة.',service1:'فحص فعلي',service1Text:'يقوم المفتش بزيارة الساحة وإنشاء تقرير موثق بالصور والفيديو والملاحظات المرئية.',service2:'قطع الغيار',service2Text:'أرسل تقرير الذكاء الاصطناعي أو الفحص الفعلي للموردين وقارن العروض.',service3:'الورش',service3Text:'أرسل التقرير إلى الورش المعتمدة وقارن عروض الإصلاح.',footer:'فحص أولي للسيارة · فحص فعلي · قطع الغيار · الورش',servicesEyebrow:'الصفحة الثانية · خدمات سنayya',servicesTitle:'وصلت السيارة. ماذا بعد؟',servicesIntro:'بعد الفحص الأولي بالذكاء الاصطناعي، توفر لك سنayya الخدمات العملية التالية في عُمان.',inspectionTitle:'الفحص الفعلي',inspectionText:'يقوم المفتش بزيارة الساحة وإعداد تقرير فحص فعلي بالصور والفيديو والملاحظات المرئية.',inspectionBtn:'احجز الفحص',partsTitle:'قطع الغيار',partsText:'أرسل طلب قطع الغيار إلى الموردين المسجلين وقارن العروض.',partsBtn:'اطلب قطع الغيار',garageTitle:'إصلاح السيارة',garageText:'أرسل التقرير إلى الورش المسجلة وقارن عروض الإصلاح.',garageBtn:'اطلب عرض ورشة',priceNote:'سعر الفحص يحدده مشرف النظام ويمكن تغييره لاحقاً من لوحة الإدارة.'}};
 let lang=localStorage.getItem('sanayya_lang')||'en';
 function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.getElementById('langBtn').textContent=lang==='ar'?'English':'العربية';document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(I18N[lang][k])el.textContent=I18N[lang][k]});document.querySelectorAll('[data-i18n-html]').forEach(el=>{const k=el.dataset.i18nHtml;if(I18N[lang][k])el.innerHTML=I18N[lang][k]});}
-document.getElementById('langBtn').onclick=()=>{lang=lang==='en'?'ar':'en';localStorage.setItem('sanayya_lang',lang);applyLang()};applyLang();
+document.getElementById('langBtn').onclick=()=>{lang=lang==='en'?'ar':'en';localStorage.setItem('sanayya_lang',lang);applyLang();const report=document.getElementById('report');if(!report.classList.contains('hidden')){try{if(window.sanayyaLastAnalysis)renderAIReport(window.sanayyaLastAnalysis,window.sanayyaLastReference||'',window.sanayyaLastFiles||[])}catch(e){console.error(e)}}};applyLang();
 const photos=document.getElementById('photos'),thumbs=document.getElementById('thumbs'),photoCount=document.getElementById('photoCount');
 photos.addEventListener('change',()=>{thumbs.innerHTML='';const fs=[...photos.files].slice(0,12);photoCount.textContent=fs.length?(lang==='ar'?`${fs.length} صورة مختارة`:`${fs.length} photo${fs.length===1?'':'s'} selected`):(lang==='ar'?'لم يتم اختيار صور':'No photos selected');fs.forEach(f=>{const r=new FileReader();r.onload=e=>{const img=document.createElement('img');img.src=e.target.result;img.alt='';thumbs.appendChild(img)};r.readAsDataURL(f)})});
 function validVin(v){return /^[A-HJ-NPR-Z0-9]{17}$/i.test(v)}
@@ -49,21 +207,175 @@ function escapeHtml(value){
     .replaceAll('"','&quot;').replaceAll("'","&#039;");
 }
 
-function renderAIReport(a,reference){
+function reportText(){
+  return lang==='ar'?{
+    title:'تقييم سنayya لأضرار السيارة بالذكاء الاصطناعي',
+    reference:'المرجع', summary:'التقييم العام', risk:'مخاطر الهيكل', area:'منطقة الضرر',
+    parts:'تقييم القطع', replaceTitle:'القطع التي تحتاج إلى استبدال', repairTitle:'القطع التي يمكن إصلاحها', okTitle:'القطع السليمة', unknownTitle:'القطع التي تحتاج إلى فحص إضافي', structuralFindings:'ملاحظات الأضرار الهيكلية', chassis:'شاصي', pillar:'عمود', checks:'الفحوصات الفعلية الموصى بها', limitations:'القيود',
+    noParts:'لم يتم إرجاع تقييم للقطع.', physical:'الفحص الفعلي مطلوب لتأكيد حالة الهيكل.',
+    disclaimer:'هذا تقييم بصري أولي بالذكاء الاصطناعي فقط. لا يمكنه اعتماد سلامة الشاصي أو الهيكل من الصور. يلزم الفحص الفعلي للتأكيد.',
+    download:'تحميل التقرير PDF', generating:'جاري إنشاء PDF...', downloaded:'تم إنشاء التقرير PDF', scanning:'جاري فحص صور السيارة...', reading:'جاري قراءة بيانات المزاد...', analyzing:'جاري تحليل الأضرار والقطع الظاهرة...',
+    photos:'صور السيارة المرفوعة', error:'تعذر إنشاء ملف PDF',
+    ok:'سليم', repair:'إصلاح', replace:'استبدال', unknown:'غير معروف',
+    low:'منخفض', possible:'محتمل', high:'مرتفع',
+    riskLabel:'مخاطر الهيكل',clear:'مسح وفحص سيارة أخرى'
+  }:{
+    title:'Sanayya AI damage assessment', reference:'Reference', summary:'Overall assessment', risk:'Structural risk', area:'Damage area',
+    parts:'Parts assessment', replaceTitle:'Parts to replace', repairTitle:'Parts that can be repaired', okTitle:'Parts that appear OK', unknownTitle:'Parts needing further inspection', structuralFindings:'Structural damage findings', chassis:'Chassis', pillar:'Pillar', checks:'Recommended physical checks', limitations:'Limitations',
+    noParts:'No part assessment returned.', physical:'Physical inspection is required for structural confirmation.',
+    disclaimer:'AI is a preliminary visual assessment only. It cannot certify a chassis/frame as safe from photographs. Physical inspection is required for confirmation.',
+    download:'Download PDF report', generating:'Generating PDF...', downloaded:'PDF report created', scanning:'Scanning vehicle photos...', reading:'Reading auction data...', analyzing:'Analyzing visible damage and parts...',
+    photos:'Uploaded vehicle photos', error:'Could not create PDF',
+    ok:'OK', repair:'REPAIR', replace:'REPLACE', unknown:'UNKNOWN',
+    low:'LOW', possible:'POSSIBLE', high:'HIGH',
+    riskLabel:'STRUCTURAL RISK',clear:'CLEAR & CHECK ANOTHER VEHICLE'
+  };
+}
+
+function translateStatus(status){
+  const t=reportText();
+  const key=String(status||'UNKNOWN').toUpperCase();
+  if(key==='OK') return t.ok;
+  if(key==='REPAIR') return t.repair;
+  if(key==='REPLACE') return t.replace;
+  return t.unknown;
+}
+
+function statusClass(status){
+  const key=String(status||'UNKNOWN').toUpperCase();
+  if(key==='OK') return 'status-ok';
+  if(key==='REPAIR') return 'status-repair';
+  if(key==='REPLACE') return 'status-replace';
+  return 'status-unknown';
+}
+
+function translateRisk(risk){
+  const t=reportText();
+  const key=String(risk||'UNKNOWN').toUpperCase();
+  if(key==='LOW') return t.low;
+  if(key==='POSSIBLE') return t.possible;
+  if(key==='HIGH') return t.high;
+  return t.unknown;
+}
+
+function riskClass(risk){
+  const key=String(risk||'UNKNOWN').toUpperCase();
+  if(key==='HIGH') return 'risk-risk';
+  if(key==='POSSIBLE') return 'risk-possible';
+  if(key==='LOW') return 'risk-low';
+  return 'risk-unknown';
+}
+
+function createPhotoUrls(files){
+  window.sanayyaPdfPhotoUrls=(window.sanayyaPdfPhotoUrls||[]);
+  window.sanayyaPdfPhotoUrls.forEach(u=>{try{URL.revokeObjectURL(u)}catch(_){}});
+  window.sanayyaPdfPhotoUrls=files.map(f=>URL.createObjectURL(f));
+  return window.sanayyaPdfPhotoUrls;
+}
+
+function renderPartGroups(parts,t){
+  const replaceParts=parts.filter(p=>String(p.status||'').toUpperCase()==='REPLACE');
+  const repairParts=parts.filter(p=>String(p.status||'').toUpperCase()==='REPAIR');
+  const okParts=parts.filter(p=>String(p.status||'').toUpperCase()==='OK');
+  const unknownParts=parts.filter(p=>String(p.status||'').toUpperCase()==='UNKNOWN' || !['REPLACE','REPAIR','OK'].includes(String(p.status||'').toUpperCase()));
+  const group=(title,items,cls)=>items.length?`<div class="part-group ${cls}"><h4>${title}</h4><div class="bid-grid">${items.map(p=>`<div class="bid-row"><span class="part-name">${escapeHtml(p.part||t.unknown)}</span><b class="part-status ${statusClass(p.status)}">${escapeHtml(translateStatus(p.status))}</b><small>${escapeHtml(p.reason||'')}</small></div>`).join('')}</div></div>`:'';
+  return `<h3>${t.parts}</h3>${group(t.replaceTitle,replaceParts,'replace-group')}${group(t.repairTitle,repairParts,'repair-group')}${group(t.okTitle,okParts,'ok-group')}${group(t.unknownTitle,unknownParts,'unknown-group')}${!parts.length?`<div class="small-note">${t.noParts}</div>`:''}`;
+}
+
+function renderAIReport(a,reference,files=[]){
   const report=document.getElementById('report');
   const parts=Array.isArray(a.parts)?a.parts:[];
   const areas=Array.isArray(a.damage_areas)?a.damage_areas:[];
   const checks=Array.isArray(a.recommended_checks)?a.recommended_checks:[];
   const limits=Array.isArray(a.limitations)?a.limitations:[];
+  const t=reportText();
+  const photoUrls=createPhotoUrls(files);
+  const risk=String(a.structural_risk||'UNKNOWN').toUpperCase();
+  report.setAttribute('dir',lang==='ar'?'rtl':'ltr');
   report.classList.remove('hidden');
-  report.innerHTML=`<div class="report-head"><div><b>Sanayya AI damage assessment</b>${reference?`<div class="small-note">Reference: SAN-AI-${escapeHtml(reference)}</div>`:''}</div><div class="score">${escapeHtml(a.confidence??'—')}%</div></div>
-  <p class="small-note">${escapeHtml(a.summary||'No summary returned.')}</p>
-  <div class="risk">STRUCTURAL RISK: ${escapeHtml(a.structural_risk||'UNKNOWN')}<br><span class="small-note">${escapeHtml(a.structural_note||'Physical inspection is required for structural confirmation.')}</span></div>
-  ${areas.length?`<div class="bid-grid">${areas.map(x=>`<div class="bid-row"><span>Damage area</span><b>${escapeHtml(x)}</b></div>`).join('')}</div>`:''}
-  <h3>Parts assessment</h3><div class="bid-grid">${parts.length?parts.map(p=>`<div class="bid-row"><span>${escapeHtml(p.part||'Unknown part')}</span><b>${escapeHtml(p.status||'UNKNOWN')}</b><small>${escapeHtml(p.reason||'')}</small></div>`).join(''):'<div class="small-note">No part assessment returned.</div>'}</div>
-  ${checks.length?`<h3>Recommended physical checks</h3><ul>${checks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>`:''}
-  ${limits.length?`<h3>Limitations</h3><ul>${limits.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>`:''}
-  <div class="small-note">AI is a preliminary visual assessment only. It cannot certify a chassis/frame as safe from photographs. Physical inspection is required for confirmation.</div>`;
+  report.innerHTML=`<div class="report-head"><div><b>${t.title}</b>${reference?`<div class="small-note">${t.reference}: SAN-AI-${escapeHtml(reference)}</div>`:''}</div></div>
+  <h3>${t.summary}</h3><p class="small-note">${escapeHtml(a.summary||'')}</p>
+  <div class="risk ${riskClass(risk)}">${t.riskLabel}: ${escapeHtml(translateRisk(risk))}<br><span class="small-note">${escapeHtml(a.structural_note||t.physical)}</span></div>
+  ${Array.isArray(a.structural_findings)&&a.structural_findings.length?`<h3>${t.structuralFindings}</h3><div class="bid-grid structural-grid">${a.structural_findings.map(x=>`<div class="bid-row structural-item"><span class="part-name">${escapeHtml(String(x.type||'').toUpperCase()==='PILLAR'?t.pillar:t.chassis)} — ${escapeHtml(x.location||'')}</span><b>${escapeHtml(x.finding||'')}</b></div>`).join('')}</div>`:''}
+  ${areas.length?`<div class="bid-grid">${areas.map(x=>`<div class="bid-row"><span>${t.area}</span><b>${escapeHtml(x)}</b></div>`).join('')}</div>`:''}
+  ${renderPartGroups(parts,t)}
+  ${checks.length?`<h3>${t.checks}</h3><ul>${checks.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>`:''}
+  ${limits.length?`<h3>${t.limitations}</h3><ul>${limits.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>`:''}
+  ${photoUrls.length?`<h3>${t.photos}</h3><div class="report-photos">${photoUrls.map((u,i)=>`<img src="${u}" alt="${escapeHtml(t.photos)} ${i+1}">`).join('')}</div>`:''}
+  <div class="small-note">${t.disclaimer}</div>
+  <div class="pdf-actions pdf-hide"><button type="button" class="pdf-btn" id="downloadPdfBtn">${t.download}</button><button type="button" class="clear-btn" id="clearCheckBtn">${t.clear}</button></div>`;
+  document.getElementById('downloadPdfBtn').onclick=downloadReportPDF;document.getElementById('clearCheckBtn').onclick=clearCurrentCheck;
+}
+
+async function downloadReportPDF(){
+  const t=reportText();
+  const btn=document.getElementById('downloadPdfBtn');
+  if(btn){btn.disabled=true;btn.textContent=t.generating;}
+  try{
+    const report=document.getElementById('report');
+    const actions=report.querySelector('.pdf-actions');
+    if(actions)actions.style.display='none';
+    const canvas=await html2canvas(report,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false});
+    if(actions)actions.style.display='flex';
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'p',unit:'mm',format:'a4',compress:true});
+    const pageWidth=210,pageHeight=297,margin=8;
+    const usableW=pageWidth-margin*2;
+    const imgW=usableW;
+    const pxPerMm=canvas.width/imgW;
+    const pagePx=Math.floor((pageHeight-margin*2)*pxPerMm);
+    let y=0;
+    let page=0;
+    while(y<canvas.height){
+      const sliceH=Math.min(pagePx,canvas.height-y);
+      const slice=document.createElement('canvas');
+      slice.width=canvas.width;slice.height=sliceH;
+      slice.getContext('2d').drawImage(canvas,0,y,canvas.width,sliceH,0,0,canvas.width,sliceH);
+      const data=slice.toDataURL('image/jpeg',0.9);
+      const h=sliceH/pxPerMm;
+      if(page>0)pdf.addPage();
+      pdf.addImage(data,'JPEG',margin,margin,imgW,h,undefined,'FAST');
+      y+=sliceH;page++;
+    }
+    const stamp=new Date().toISOString().slice(0,10);
+    pdf.save(`Sanayya-AI-Damage-Report-${stamp}.pdf`);
+    toast(t.downloaded,true);
+  }catch(e){
+    console.error(e);
+    toast(t.error,false);
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=t.download;}
+  }
+}
+
+function clearCurrentCheck(){
+  const report=document.getElementById('report');
+  const bidcars=document.getElementById('bidcarsPanel');
+  const vinInput=document.getElementById('vin');
+  const photosInput=document.getElementById('photos');
+  const thumbsEl=document.getElementById('thumbs');
+  const countEl=document.getElementById('photoCount');
+  report.classList.add('hidden');
+  report.innerHTML='';
+  bidcars.classList.add('hidden');
+  bidcars.innerHTML='';
+  vinInput.value='';
+  photosInput.value='';
+  thumbsEl.innerHTML='';
+  countEl.textContent=lang==='ar'?'لم يتم اختيار صور':'No photos selected';
+  window.sanayyaLastAnalysis=null;
+  window.sanayyaLastReference='';
+  window.sanayyaLastFiles=[];
+  document.getElementById('checkBtn').disabled=false;
+  document.getElementById('checkBtn').textContent=I18N[lang].checkBtn;
+  window.scrollTo({top:document.getElementById('check').offsetTop,behavior:'smooth'});
+}
+
+function showScanState(message){
+  const report=document.getElementById('report');
+  report.classList.remove('hidden');
+  report.setAttribute('dir',lang==='ar'?'rtl':'ltr');
+  report.innerHTML=`<div class="scan-state"><span class="scan-spinner"></span><span>${escapeHtml(message)}</span></div><div class="small-note" style="margin-top:10px">${lang==='ar'?'قد يستغرق التحليل بعض الوقت لأن الذكاء الاصطناعي يفحص الصور واحدةً تلو الأخرى.':'The AI may take a little time because it analyzes the uploaded photos carefully.'}</div>`;
 }
 
 async function callGeminiDamageAnalysis({source,bid,files}){
@@ -80,7 +392,9 @@ async function callGeminiDamageAnalysis({source,bid,files}){
     body:JSON.stringify({
       vin:bid?.vin||(validVin(source)?source:''),
       auction_url:validBid(source)?source:'',
-      photos:photoPayload
+      language:lang,
+      photos:photoPayload,
+      scan_mode:'conservative_damage_assessment'
     })
   });
 
@@ -100,18 +414,21 @@ document.getElementById('checkBtn').onclick=async()=>{
   const btn=document.getElementById('checkBtn');
   btn.disabled=true;
   btn.textContent=lang==='ar'?'جارٍ تحليل الضرر...':'ANALYZING DAMAGE...';
+  showScanState(reportText().scanning);
   document.getElementById('bidcarsPanel').classList.add('hidden');
   document.getElementById('report').classList.add('hidden');
 
   try{
     let bid=null;
     if(validBid(source)){
-      btn.textContent='READING AUCTION...';
+      btn.textContent=lang==='ar'?'جاري قراءة بيانات المزاد...':'READING AUCTION...';
+      showScanState(reportText().reading);
       bid=await fetchBidCars(source);
       renderBid(bid);
     }
 
-    btn.textContent='ANALYZING PHOTOS...';
+    btn.textContent=lang==='ar'?'جاري تحليل الصور...':'ANALYZING PHOTOS...';
+    showScanState(reportText().analyzing);
     const analysis=await callGeminiDamageAnalysis({source,bid,files});
 
     let reference='';
@@ -144,17 +461,64 @@ document.getElementById('checkBtn').onclick=async()=>{
       reference=String(check.id).slice(0,8);
     }
 
-    renderAIReport(analysis,reference);
-    toast('Damage analysis completed.',true);
+    window.sanayyaLastAnalysis=analysis;window.sanayyaLastReference=reference;window.sanayyaLastFiles=files;renderAIReport(analysis,reference,files);
+    toast(lang==='ar'?'اكتمل تحليل الأضرار.':'Damage analysis completed.',true);
 
   }catch(e){
     console.error(e);
     document.getElementById('report').classList.remove('hidden');
-    document.getElementById('report').innerHTML=`<div class="report-head"><div><b>AI analysis could not be completed</b></div><div class="score">ERROR</div></div><p class="small-note">${escapeHtml(e.message||'Could not analyze the vehicle.')}</p><div class="risk">PHYSICAL INSPECTION REQUIRED</div>`;
+    document.getElementById('report').setAttribute('dir',lang==='ar'?'rtl':'ltr');document.getElementById('report').innerHTML=`<div class="report-head"><div><b>${lang==='ar'?'تعذر إكمال تحليل الذكاء الاصطناعي':'AI analysis could not be completed'}</b></div><div class="score">ERROR</div></div><p class="small-note">${escapeHtml(e.message|| (lang==='ar'?'تعذر تحليل السيارة.':'Could not analyze the vehicle.'))}</p><div class="risk risk-risk">${lang==='ar'?'الفحص الفعلي مطلوب':'PHYSICAL INSPECTION REQUIRED'}</div>`;
     toast(e.message||'Could not analyze the vehicle.',false);
   }finally{
     btn.disabled=false;
     btn.textContent=I18N[lang].checkBtn;
   }
 };
-</script></body></html>
+
+async function loadInspectionPrice(){
+  try{
+    const {data,error}=await sb.from('site_settings').select('value').eq('key','inspection_price_omr').maybeSingle();
+    if(!error&&data?.value!=null){
+      const n=Number(data.value);
+      if(Number.isFinite(n)){
+        document.getElementById('inspectionPrice').textContent=(Number.isInteger(n)?n:n.toFixed(2).replace(/0+$/,'').replace(/\.$/,''))+' OMR';
+      }
+    }
+  }catch(e){console.warn(e)}
+}
+loadInspectionPrice();
+</script>
+<style>
+.customer-flow-section{padding:85px 0;background:#f8fbff}
+.workflow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:26px}
+.workflow .panel{border:1px solid #dbe4ef;border-radius:18px;padding:22px;background:#fff}
+.flow-form{display:grid;gap:10px}
+.flow-form textarea{min-height:110px;resize:vertical}
+.flow-form select{appearance:auto}
+.notice{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:12px;font-size:13px;line-height:1.5;margin-bottom:14px}
+.share-box{background:#eef5ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;line-height:1.5}
+.upload-mini{border:1px dashed #9fb8d4;padding:16px;border-radius:12px;background:#f8fbff}
+@media(max-width:800px){.workflow{grid-template-columns:1fr}}
+</style>
+<script>
+function prepareCustomerRequest(type){
+  if(type==='parts'){
+    const list=(document.getElementById('partsReq').value||'').trim();
+    const inspection=document.getElementById('partsInspection').value;
+    const photos=document.getElementById('partsPhotos').files;
+    if(!list){alert('Please enter your own parts list.');return false;}
+    if(inspection!=='yes' && !photos.length){
+      alert('For a direct parts quotation, please provide your own parts list and supporting pictures. Otherwise, book a physical inspection first.');
+      return false;
+    }
+    alert('Your parts quotation request is prepared. It will be submitted to registered parts suppliers after the customer account/database workflow is connected.');
+    return false;
+  }
+  const req=(document.getElementById('garageReq').value||'').trim();
+  if(!req){alert('Please describe the repair work.');return false;}
+  alert('Your garage quotation request is prepared. It will be submitted to registered garages after the customer account/database workflow is connected.');
+  return false;
+}
+</script>
+
+</body></html>
