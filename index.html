@@ -107,7 +107,25 @@ input:focus{border-color:#6ea8f7;box-shadow:0 0 0 4px #e8f2ff}
 .part{padding:11px 0;border-bottom:1px solid #edf0f4;display:flex;justify-content:space-between;gap:12px}
 .part:last-child{border-bottom:0}
 .status{font-size:10px;font-weight:950;padding:5px 8px;border-radius:7px;height:max-content}
-.repair{background:#fff0dc;color:#a45c09}.replace{background:#ffe4e4;color:#a52a2a}.unknown{background:#eef1f5;color:#5d6a79}
+.repair{background:#fff0dc;color:#a45c09}.replace{background:#ffe4e4;color:#a52a2a}.unknown{background:#eef1f5;color:#5d6a79}.ok{background:#e5faef;color:#168044}.deployed{background:#ffe4e4;color:#a52a2a}.damaged{background:#ffe4e4;color:#a52a2a}.not_visible{background:#eef1f5;color:#5d6a79}.no_visible_deployment{background:#e5faef;color:#168044}
+.assessment-box{margin-top:15px}
+.assessment-box h3{font-size:22px}
+.risk{padding:12px 14px;border-radius:12px;font-weight:900;margin:8px 0 12px}
+.risk.high,.risk.possible{background:#ffe0e0;color:#a52a2a}
+.risk.low{background:#e5faef;color:#168044}
+.risk.unknown{background:#eef1f5;color:#5d6a79}
+.risk small{display:block;font-weight:600;margin-top:3px}
+.area-grid,.card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.area-card{border:1px solid var(--line);border-radius:13px;padding:13px;background:#fff}
+.area-card strong{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.35px;color:#687a92;margin-bottom:4px}
+.section-title{font-size:18px;font-weight:950;margin:22px 0 9px}
+.section-title.replace-title{color:#b51e1e}.section-title.repair-title{color:#b25e08}.section-title.ok-title{color:#168044}.section-title.unknown-title{color:#5d6a79}.section-title.airbag-title{color:#10213a}
+.part-card{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fff;margin-bottom:10px}
+.part-name{display:block;font-size:16px;font-weight:950;color:#10213a;background:#f6f8fb;border:1px solid #dfe6ef;border-radius:9px;padding:8px 10px;margin-bottom:8px}
+.part-card.replace-card .part-name{background:#ffe4e4;border-color:#f3c8c8}.part-card.repair-card .part-name{background:#fff6ea;border-color:#f3ddbc}.part-card.ok-card .part-name{background:#ebfbf3;border-color:#c8eedb}.part-card.unknown-card .part-name{background:#f0f2f5;border-color:#dfe3e8}
+.part-reason{font-size:14px;line-height:1.55;color:#25364b}.part-status{font-weight:950;margin-right:4px}
+.photos-report{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.photos-report img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+@media(max-width:600px){.area-grid,.card-grid,.photos-report{grid-template-columns:1fr}}
 .actions{display:flex;gap:10px;margin-top:15px}
 .secondary{flex:1;border:1px solid #ccd7e5;background:#fff;color:#23364e;border-radius:12px;padding:13px;font-weight:850;cursor:pointer}
 .report .primary{flex:1}
@@ -248,14 +266,44 @@ footer{background:#071a31;color:#8fa2b8;padding:23px 0;font-size:12px}
 
 <section id="report" class="report">
 <div class="wrap">
-  <div class="report-head"><h2>AI Damage Report</h2><div id="vehicle" class="muted"></div></div>
-  <div class="grid">
-    <div class="box"><h3>Summary</h3><p id="summary" class="muted" style="line-height:1.65"></p></div>
-    <div class="box"><h3>Structural findings</h3><ul id="structural" class="list"></ul></div>
-    <div class="box"><h3>Parts</h3><div id="parts"></div></div>
-    <div class="box"><h3>Recommended checks</h3><ul id="checks" class="list"></ul></div>
+  <div class="report-head"><h2>Sanayya AI damage assessment</h2><div id="vehicle" class="muted"></div></div>
+
+  <div class="box assessment-box">
+    <h3>Overall assessment</h3>
+    <p id="summary" class="muted" style="line-height:1.65;margin-bottom:12px"></p>
+    <div id="risk"></div>
+    <div id="areas" class="area-grid"></div>
+    <div id="structuralFindings"></div>
   </div>
-  <div class="box" style="margin-top:15px"><h3>Important limitation</h3><p class="muted" style="line-height:1.65;margin:0">AI analysis is preliminary and based only on submitted information. It cannot confirm hidden mechanical or structural damage. A physical inspection is required for confirmation.</p></div>
+
+  <div class="box assessment-box">
+    <h3>Parts assessment</h3>
+    <div id="replaceSection"></div>
+    <div id="repairSection"></div>
+    <div id="okSection"></div>
+    <div id="unknownSection"></div>
+  </div>
+
+  <div class="box assessment-box">
+    <h3>Airbag / SRS assessment</h3>
+    <div id="airbags"></div>
+  </div>
+
+  <div class="box assessment-box">
+    <h3>Recommended physical checks</h3>
+    <ul id="checks" class="list"></ul>
+  </div>
+
+  <div class="box assessment-box">
+    <h3>Limitations</h3>
+    <ul id="limitations" class="list"></ul>
+  </div>
+
+  <div class="box assessment-box" id="photoBox">
+    <h3>Uploaded vehicle photos</h3>
+    <div id="reportPhotos" class="photos-report"></div>
+  </div>
+
   <div class="actions">
     <button class="secondary" onclick="clearAll()">Clear & Check Another Vehicle</button>
     <button class="secondary" onclick="window.print()">Print / Save PDF</button>
@@ -312,45 +360,107 @@ footer{background:#071a31;color:#8fa2b8;padding:23px 0;font-size:12px}
 <footer><div class="wrap">© Sanayya — From auction to Oman. From warehouse to garage.</div></footer>
 
 <script>
-const WHATSAPP_NUMBER="96800000000"; // Replace with your real Sanayya WhatsApp number.
-const wa=t=>"https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(t);
+const SUPABASE_URL="https://zohfsqyiwtfhoniuzuob.supabase.co";
+const SUPABASE_KEY="sb_publishable_zwI-9LYGnMCET--8njK7iQ__DOVYZUD";
+const ANALYZE_URL=SUPABASE_URL+"/functions/v1/analyze-damage";
+let selectedFiles=[];
 
-document.getElementById("iwa").href=wa("Hello Sanayya, I want to book a physical inspection. Please guide me through the required vehicle details and payment.");
-document.getElementById("pwa").href=wa("Hello Sanayya, I need spare-parts prices. I can send my vehicle details, confirmed parts list, inspection report, photos or an existing quotation.");
-document.getElementById("gwa").href=wa("Hello Sanayya, I want a garage quotation. I can send the VIN, vehicle details, damage photos and any AI or physical inspection report.");
+function wa(number,text){
+  const clean=String(number||"").replace(/\D/g,"");
+  return clean ? "https://wa.me/"+clean+"?text="+encodeURIComponent(text) : "#";
+}
+async function loadWhatsAppRoutes(){
+  const fallback="96800000000";
+  const routes={physical_inspection:fallback,spare_parts:fallback,garage_quotes:fallback,ai_damage_check:fallback};
+  try{
+    const r=await fetch(SUPABASE_URL+"/rest/v1/whatsapp_routes?select=service_key,whatsapp_number_id");
+    if(!r.ok) throw new Error("route read failed");
+    const rows=await r.json();
+    const ids=[...new Set(rows.map(x=>x.whatsapp_number_id).filter(Boolean))];
+    let nums=[];
+    if(ids.length){
+      const q=encodeURIComponent(ids.map(x=>`\"${x}\"`).join(","));
+      const nr=await fetch(SUPABASE_URL+"/rest/v1/whatsapp_numbers?select=id,phone,active&id=in."+q);
+      if(nr.ok) nums=await nr.json();
+    }
+    const map=Object.fromEntries(nums.map(x=>[x.id,x]));
+    rows.forEach(x=>{ if(routes[x.service_key]!==undefined && map[x.whatsapp_number_id]?.active) routes[x.service_key]=map[x.whatsapp_number_id].phone; });
+  }catch(e){ console.warn("WhatsApp routing fallback used",e); }
+  document.getElementById("iwa").href=wa(routes.physical_inspection,"Hello Sanayya, I want to book a physical inspection. Please guide me through the required vehicle details and payment.");
+  document.getElementById("pwa").href=wa(routes.spare_parts,"Hello Sanayya, I need spare-parts prices. I can send my vehicle details, confirmed parts list, inspection report, photos or an existing quotation.");
+  document.getElementById("gwa").href=wa(routes.garage_quotes,"Hello Sanayya, I want a garage quotation. I can send the VIN, vehicle details, damage photos and any AI or physical inspection report.");
+}
+loadWhatsAppRoutes();
+
 function photos(){
-  const fs=[...document.getElementById("files").files],t=document.getElementById("thumbs");t.innerHTML="";
-  fs.forEach(f=>{const i=document.createElement("img");i.className="thumb";i.src=URL.createObjectURL(f);t.appendChild(i)});
+  selectedFiles=[...document.getElementById("files").files];
+  const t=document.getElementById("thumbs");t.innerHTML="";
+  selectedFiles.forEach(f=>{const i=document.createElement("img");i.className="thumb";i.src=URL.createObjectURL(f);t.appendChild(i)});
 }
-function analyze(){
-  if(!document.getElementById("ref").value.trim()&&!document.getElementById("files").files.length){
-    alert("Please enter a VIN/auction reference or upload vehicle photos.");return;
-  }
-  const p=document.getElementById("progress"),txt=document.getElementById("pt");p.style.display="block";
-  const steps=["Reading vehicle information…","Reviewing visible damage…","Checking visible structural areas…","Preparing the report…"];let i=0;
-  const timer=setInterval(()=>{txt.textContent=steps[i++];if(i===steps.length){clearInterval(timer);setTimeout(showReport,500)}},650);
+function resizeImageForAI(file){
+  return new Promise((resolve,reject)=>{
+    const img=new Image(); const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      const maxSide=1600, scale=Math.min(1,maxSide/Math.max(img.width,img.height));
+      const c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));
+      c.getContext("2d").drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url);
+      resolve(c.toDataURL("image/jpeg",.78).split(",")[1]);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("Could not read image"))}; img.src=url;
+  });
 }
-function showReport(){
-  document.getElementById("progress").style.display="none";document.getElementById("report").style.display="block";
-  document.getElementById("vehicle").textContent=document.getElementById("ref").value||"Vehicle photos";
-  document.getElementById("summary").textContent="Preliminary visual assessment of the submitted information. Visible damage is organized by area and part; hidden condition cannot be confirmed.";
-  const s=document.getElementById("structural");s.innerHTML="";
-  ["Structural areas may not be fully visible in auction photos.","Physical inspection is required to confirm chassis/frame and pillar condition."].forEach(x=>{const li=document.createElement("li");li.textContent=x;s.appendChild(li)});
-  const items=[
-    ["Front bumper","REPAIR","Visible surface damage may be repairable if not cracked or severely broken."],
-    ["Left headlight","UNKNOWN","Condition cannot be confirmed clearly from the available information."],
-    ["Fender","REPAIR","Visible panel damage may be repairable if substantially intact."]
-  ];
-  const parts=document.getElementById("parts");parts.innerHTML="";
-  items.forEach(x=>{const d=document.createElement("div");d.className="part";d.innerHTML="<div><strong>"+x[0]+"</strong><div class='muted' style='font-size:13px;margin-top:3px'>"+x[2]+"</div></div><span class='status "+x[1].toLowerCase()+"'>"+x[1]+"</span>";parts.appendChild(d)});
-  const checks=document.getElementById("checks");checks.innerHTML="";
-  ["Inspect chassis/frame rails and apron physically.","Check radiator support and cooling components.","Check suspension and steering for hidden impact damage.","Check lights, sensors and mounting points."].forEach(x=>{const li=document.createElement("li");li.textContent=x;checks.appendChild(li)});
-  document.getElementById("report").scrollIntoView({behavior:"smooth"});
+function esc(v){return String(v??"").replace(/[&<>\"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
+function statusClass(s){return String(s||"UNKNOWN").toLowerCase().replaceAll(" ","_");}
+function sectionCards(items,titleClass,title){
+  if(!items.length)return "";
+  const cards=items.map(x=>`<div class="part-card ${statusClass(x.status)}-card"><span class="part-name">${esc(x.part)}</span><div class="part-reason"><span class="part-status ${statusClass(x.status)}">${esc(x.status)}</span>${esc(x.reason||"")}</div></div>`).join("");
+  return `<div class="section-title ${titleClass}">${title}</div><div class="card-grid">${cards}</div>`;
+}
+function renderAIReport(a,reference){
+  document.getElementById("vehicle").textContent=reference||"Vehicle photos";
+  document.getElementById("summary").textContent=a.summary||"Preliminary visual assessment of the submitted photographs.";
+  const risk=(a.structural_risk||"UNKNOWN").toUpperCase();
+  const riskText={HIGH:"Visible structural evidence requires urgent physical inspection.",POSSIBLE:"Possible visible structural damage — physical inspection required.",LOW:"No visible structural deformation identified in the submitted photos.",UNKNOWN:"Structural areas are not visible enough to make a reliable judgment from photos."}[risk]||"Physical inspection is required.";
+  document.getElementById("risk").innerHTML=`<div class="risk ${risk.toLowerCase()}">STRUCTURAL RISK: ${esc(risk)}<small>${esc(a.structural_note||riskText)}</small></div>`;
+  const areas=(a.damage_areas||[]).filter(Boolean);
+  document.getElementById("areas").innerHTML=areas.length?areas.map(x=>`<div class="area-card"><strong>Damage area</strong>${esc(x)}</div>`).join(""):`<div class="area-card"><strong>Damage area</strong>No specific visible area reported</div>`;
+  const findings=(a.structural_findings||[]).map(x=>`<div class="part-card"><span class="part-name">${esc(x.location||x.type||"Structural area")}</span><div class="part-reason"><strong>${esc(x.type||"Structural finding")}</strong> — ${esc(x.finding||"")}</div></div>`).join("");
+  document.getElementById("structuralFindings").innerHTML=findings?`<div class="section-title">Structural findings</div><div class="card-grid">${findings}</div>`:"";
+  const parts=Array.isArray(a.parts)?a.parts:[];
+  const bucket=(st)=>parts.filter(x=>String(x.status||"").toUpperCase()===st);
+  document.getElementById("replaceSection").innerHTML=sectionCards(bucket("REPLACE"),"replace-title","Parts to replace");
+  document.getElementById("repairSection").innerHTML=sectionCards(bucket("REPAIR"),"repair-title","Parts that can be repaired");
+  document.getElementById("okSection").innerHTML=sectionCards(bucket("OK"),"ok-title","Parts that appear OK");
+  document.getElementById("unknownSection").innerHTML=sectionCards(bucket("UNKNOWN"),"unknown-title","Parts that are not visible / unknown");
+  const airbags=Array.isArray(a.airbags)?a.airbags:[];
+  document.getElementById("airbags").innerHTML=airbags.length?`<div class="card-grid">${airbags.map(x=>`<div class="part-card"><span class="part-name">${esc(x.part)}</span><div class="part-reason"><span class="part-status ${statusClass(x.status)}">${esc(x.status)}</span>${esc(x.reason||"")}</div></div>`).join("")}</div>`:`<div class="part-card"><span class="part-name">Airbag / SRS</span><div class="part-reason"><span class="part-status unknown">UNKNOWN</span>Airbag condition cannot be confirmed because the relevant areas are not visible.</div></div>`;
+  const checks=(a.recommended_checks||[]).filter(Boolean);
+  document.getElementById("checks").innerHTML=(checks.length?checks:["Perform a physical chassis/frame inspection.","Perform an SRS/airbag diagnostic scan."]).map(x=>`<li>${esc(x)}</li>`).join("");
+  const lim=(a.limitations||[]).filter(Boolean);
+  document.getElementById("limitations").innerHTML=(lim.length?lim:["Photos cannot confirm hidden mechanical or structural damage.","Physical inspection is required for confirmation."]).map(x=>`<li>${esc(x)}</li>`).join("");
+  document.getElementById("reportPhotos").innerHTML=selectedFiles.map(f=>`<img src="${URL.createObjectURL(f)}" alt="Uploaded vehicle photo">`).join("");
+  document.getElementById("photoBox").style.display=selectedFiles.length?"block":"none";
+}
+async function analyze(){
+  const ref=document.getElementById("ref").value.trim();
+  if(!ref&&!selectedFiles.length){alert("Please enter a VIN/auction reference or upload vehicle photos.");return;}
+  if(!selectedFiles.length){alert("Please upload at least one vehicle photo for the AI damage assessment.");return;}
+  const progress=document.getElementById("progress"),pt=document.getElementById("pt"); progress.style.display="block";
+  const steps=["Reading vehicle information…","Reviewing visible damage…","Checking chassis and frame rails…","Checking airbags / SRS visibility…","Preparing the report…"];let i=0;
+  const timer=setInterval(()=>{pt.textContent=steps[Math.min(i++,steps.length-1)];if(i>=steps.length)clearInterval(timer)},850);
+  try{
+    const encoded=[];
+    for(const f of selectedFiles.slice(0,12)){encoded.push({mime_type:"image/jpeg",base64:await resizeImageForAI(f)})}
+    const r=await fetch(ANALYZE_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},body:JSON.stringify({vin:ref,auction_url:ref,photos:encoded,language:"en"})});
+    const data=await r.json();
+    if(!r.ok||!data.success) throw new Error(data.error||"AI analysis failed");
+    clearInterval(timer);pt.textContent="Report ready";
+    renderAIReport(data.analysis,ref);
+    setTimeout(()=>{progress.style.display="none";document.getElementById("report").style.display="block";document.getElementById("report").scrollIntoView({behavior:"smooth"})},350);
+  }catch(e){clearInterval(timer);progress.style.display="none";alert("The AI report could not be generated. Please try again.\n\n"+e.message);}
 }
 function clearAll(){
-  document.getElementById("ref").value="";document.getElementById("files").value="";
-  document.getElementById("thumbs").innerHTML="";document.getElementById("report").style.display="none";
-  window.scrollTo({top:0,behavior:"smooth"});
+  document.getElementById("ref").value="";document.getElementById("files").value="";selectedFiles=[];document.getElementById("thumbs").innerHTML="";document.getElementById("report").style.display="none";window.scrollTo({top:0,behavior:"smooth"});
 }
 </script>
 </body>
