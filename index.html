@@ -200,6 +200,7 @@ footer{background:#071a31;color:#8fa2b8;padding:23px 0;font-size:12px}
   header,.page-one,.services-page,footer{display:none!important}
   .report{display:block!important;padding:0}
 }
+.service-modal{display:none;position:fixed;inset:0;background:rgba(5,18,39,.72);z-index:1000;padding:24px;align-items:center;justify-content:center}.service-modal.show{display:flex}.service-modal-box{position:relative;width:min(680px,100%);background:#fff;border-radius:22px;padding:32px;box-shadow:0 24px 70px rgba(0,0,0,.28);color:#10233f}.service-modal-box h3{font-size:30px;margin:8px 0 18px}.service-modal-box p{font-size:16px;line-height:1.7;color:#52657d}.service-modal-box ul{padding-left:20px;line-height:1.8;color:#344b67}.service-close{position:absolute;right:18px;top:10px;border:0;background:transparent;font-size:32px;cursor:pointer;color:#52657d}.service-modal-actions{display:flex;gap:12px;margin-top:24px}.service-modal-actions button{flex:1;padding:13px 18px;border-radius:12px;border:0;cursor:pointer;font-weight:700}.service-modal-actions .primary{background:#327fe9;color:#fff}.service-modal-actions .secondary{background:#edf3fa;color:#10233f}.request-service{border:0;cursor:pointer;font:inherit}
 </style>
 </head>
 <body>
@@ -211,8 +212,8 @@ footer{background:#071a31;color:#8fa2b8;padding:23px 0;font-size:12px}
     <div class="navlinks">
       <a href="#vehicle-check">Vehicle Check</a>
       <a href="#services">Services</a>
-      <a href="#services">Login / Create account</a>
-      <a class="lang" href="#">العربية</a>
+      <a href="login.html">Login</a>
+      <a class="lang" href="#" id="langToggle">العربية</a>
     </div>
   </div>
 </header>
@@ -328,30 +329,11 @@ footer{background:#071a31;color:#8fa2b8;padding:23px 0;font-size:12px}
   </div>
 
   <div class="services">
-    <div class="service">
-      <div class="icon">🔎</div>
-      <h3>Physical Inspection</h3>
-      <p>Book an inspection in Oman and let Sanayya prepare the vehicle case.</p>
-      <ul><li>Make, model and VIN</li><li>Auction lot and colour</li><li>Yard/location</li><li>Photos and payment confirmation</li></ul>
-      <a class="wa" id="iwa" target="_blank">Book via WhatsApp</a>
-    </div>
-
-    <div class="service">
-      <div class="icon">🔩</div>
-      <h3>Spare Parts</h3>
-      <p>Send a confirmed parts list, inspection report, photos or an existing quotation.</p>
-      <ul><li>Inspection if parts are unknown</li><li>Your own parts list is accepted</li><li>Compare supplier prices</li><li>Clear vehicle case for suppliers</li></ul>
-      <a class="wa" id="pwa" target="_blank">Request Parts Prices</a>
-    </div>
-
-    <div class="service">
-      <div class="icon">🔧</div>
-      <h3>Garage Quotes</h3>
-      <p>Prepare one proper repair case instead of visiting garage after garage.</p>
-      <ul><li>VIN and vehicle details</li><li>Damage photos</li><li>AI or inspection report when available</li><li>Complete repair request before quotations</li></ul>
-      <a class="wa" id="gwa" target="_blank">Get Garage Quotes</a>
-    </div>
+    <div class="service"><div class="icon">🔎</div><h3 data-i18n="physical">Physical Inspection</h3><p data-i18n="physicalP">Sanayya checks visible damage, required parts, diagnostic/start codes when available, and visible chassis or frame-rail bending.</p><ul><li data-i18n="physicalL1">Required parts and visible damage</li><li data-i18n="physicalL2">Visible chassis / frame-rail bend</li><li data-i18n="physicalL3">Diagnostic or start codes when available</li><li data-i18n="physicalL4">Inspector confirms what photos cannot</li></ul><button class="wa request-service" type="button" onclick="openService('physical')" data-i18n="requestQuote">Request a Quote</button></div>
+    <div class="service"><div class="icon">🔩</div><h3 data-i18n="partsService">Spare Parts</h3><p data-i18n="partsP">See Sanayya's available spare parts and review the part type and warranty terms before payment.</p><ul><li data-i18n="partsL1">Original / Genuine / Taiwan options when available</li><li data-i18n="partsL2">China or non-original parts clearly identified</li><li data-i18n="partsL3">Warranty is stated in the invoice</li><li data-i18n="partsL4">Check the invoice before payment</li></ul><button class="wa request-service" type="button" onclick="openService('parts')" data-i18n="requestQuote">Request a Quote</button></div>
+    <div class="service"><div class="icon">🔧</div><h3 data-i18n="garageQuotes">Garage Quotes</h3><p data-i18n="garageP">Receive quotations from Sanayya's aftermarket garages with work and warranty terms clearly shown.</p><ul><li data-i18n="garageL1">Garages are aftermarket</li><li data-i18n="garageL2">Paint and work warranty must be in the invoice</li><li data-i18n="garageL3">Garage responsibility follows the invoice</li><li data-i18n="garageL4">Check the invoice before payment</li></ul><button class="wa request-service" type="button" onclick="openService('garage')" data-i18n="requestQuote">Request a Quote</button></div>
   </div>
+  <div id="serviceModal" class="service-modal" aria-hidden="true"><div class="service-modal-box"><button class="service-close" type="button" onclick="closeService()">×</button><div id="serviceModalIcon" class="icon">🔎</div><h3 id="serviceModalTitle"></h3><div id="serviceModalBody"></div><div class="service-modal-actions"><button class="secondary" type="button" onclick="closeService()" data-i18n="back">Back</button><button id="serviceModalAction" class="primary" type="button" onclick="confirmService()" data-i18n="continueRequest">Continue</button></div></div></div>
 
   <div class="service-note">Sanayya can coordinate the vehicle journey through WhatsApp. AI findings are preliminary and do not replace a physical inspection.</div>
 </div>
@@ -369,6 +351,87 @@ function wa(number,text){
   const clean=String(number||"").replace(/\D/g,"");
   return clean ? "https://wa.me/"+clean+"?text="+encodeURIComponent(text) : "#";
 }
+
+let currentLanguage = localStorage.getItem("sanayya_language") || "en";
+const translations = {
+  en: {
+    vehicleCheck:"Vehicle Check", services:"Services", login:"Login", arabic:"العربية",
+    eyebrow:"Free vehicle pre-check · US auction cars", title1:"Know the damage", title2:"before you buy.",
+    hero:"Check the visible condition of a US auction vehicle before you commit. Sanayya organizes the auction information, photos, affected areas and structural warning signs into one clear preliminary report.",
+    pill1:"VIN / Auction", pill2:"Auction facts", pill3:"Parts assessment", pill4:"Structural risk",
+    checkLabel:"SANAYYA CHECK", free:"FREE", checkTitle:"Check this vehicle",
+    checkIntro:"Enter the vehicle reference and upload clear auction photos. No auction account is needed for the public listing details.",
+    refLabel:"VIN or Auction Link", refPlaceholder:"VIN (17 characters) or auction vehicle URL", photoLabel:"Auction photos",
+    photoStrong:"＋ Add vehicle photos", photoHint:"Front, rear, sides, wheels, cabin and damage areas",
+    checkBtn:"CHECK VEHICLE — FREE", note:"Preliminary visual assessment only. Sanayya cannot certify a chassis/frame as safe from photos. Physical inspection is required for confirmation.",
+    reportTitle:"Sanayya AI damage assessment", overall:"Overall assessment", parts:"Parts assessment", replace:"Parts to replace", repair:"Parts that can be repaired", ok:"Parts that appear OK", unknown:"Parts that are not visible / unknown", airbags:"Airbag / SRS assessment", checksTitle:"Recommended physical checks", limitationsTitle:"Limitations", photosTitle:"Uploaded vehicle photos", clear:"Clear & Check Another Vehicle", print:"Print / Save PDF", continue:"Continue to Services ↓",
+    servicesEyebrow:"Sanayya vehicle services", servicesTitle1:"Tired of visiting Sanayya", servicesTitle2:"again and again?", servicesLead:"We do it for you.", servicesLead2:"Book with us and save your time.", servicesLead3:"From auction to Oman. From warehouse to garage.",
+    auction:"From Auction", oman:"To Oman", warehouse:"Warehouse to Parts", garage:"To Garage", journey1:"Vehicle information, auction link and photos.", journey2:"Physical inspection after the vehicle arrives.", journey3:"Confirm parts and compare supplier prices.", journey4:"Prepare the repair case and compare suitable quotations.",
+    physical:"Physical Inspection", physicalP:"Sanayya checks visible damage, required parts, diagnostic/start codes when available, and visible chassis or frame-rail bending.", physicalL1:"Required parts and visible damage", physicalL2:"Visible chassis / frame-rail bend", physicalL3:"Diagnostic or start codes when available", physicalL4:"Inspector confirms what photos cannot", partsService:"Spare Parts", partsP:"See Sanayya's available spare parts and review the part type and warranty terms before payment.", partsL1:"Original / Genuine / Taiwan options when available", partsL2:"China or non-original parts clearly identified", partsL3:"Warranty is stated in the invoice", partsL4:"Check the invoice before payment", garageQuotes:"Garage Quotes", garageP:"Receive quotations from Sanayya's aftermarket garages with work and warranty terms clearly shown.", garageL1:"Garages are aftermarket", garageL2:"Paint and work warranty must be in the invoice", garageL3:"Garage responsibility follows the invoice", garageL4:"Check the invoice before payment",
+    requestQuote:"Request a Quote", back:"Back", continueRequest:"Continue", serviceNote:"Sanayya can coordinate the vehicle journey through WhatsApp. AI findings are preliminary and do not replace a physical inspection.", footer:"© Sanayya — From auction to Oman. From warehouse to garage.",
+    riskHigh:"Visible structural evidence requires urgent physical inspection.", riskPossible:"Possible visible structural damage — physical inspection required.", riskLow:"No visible structural deformation identified in the submitted photos.", riskUnknown:"Structural areas are not visible enough to make a reliable judgment from photos.", damageArea:"Damage area", noArea:"No specific visible area reported", structuralFindings:"Structural findings", structuralFinding:"Structural finding", airbagUnknown:"Airbag condition cannot be confirmed because the relevant areas are not visible.", defaultCheck1:"Perform a physical chassis/frame inspection.", defaultCheck2:"Perform an SRS/airbag diagnostic scan.", defaultLimit1:"Photos cannot confirm hidden mechanical or structural damage.", defaultLimit2:"Physical inspection is required for confirmation.",
+    statusReplace:"REPLACE", statusRepair:"REPAIR", statusOK:"OK", statusUnknown:"UNKNOWN", deployed:"DEPLOYED", damaged:"DAMAGED", notVisible:"NOT_VISIBLE", noDeployment:"NO_VISIBLE_DEPLOYMENT"
+  },
+  ar: {
+    vehicleCheck:"فحص المركبة", services:"الخدمات", login:"تسجيل الدخول", arabic:"English",
+    eyebrow:"فحص مبدئي مجاني · سيارات مزادات أمريكية", title1:"اعرف الأضرار", title2:"قبل أن تشتري.",
+    hero:"افحص الحالة الظاهرة لسيارة من مزادات الولايات المتحدة قبل الشراء. تنظم سنعية معلومات المزاد والصور ومناطق الضرر وعلامات التحذير الهيكلية في تقرير مبدئي واضح.",
+    pill1:"رقم VIN / المزاد", pill2:"بيانات المزاد", pill3:"تقييم القطع", pill4:"المخاطر الهيكلية",
+    checkLabel:"فحص سنعية", free:"مجاني", checkTitle:"افحص هذه المركبة",
+    checkIntro:"أدخل مرجع المركبة وارفع صور المزاد الواضحة. لا تحتاج إلى حساب في المزاد لعرض بيانات السيارة العامة.",
+    refLabel:"رقم VIN أو رابط المزاد", refPlaceholder:"رقم VIN (17 حرفاً) أو رابط السيارة في المزاد", photoLabel:"صور المزاد",
+    photoStrong:"＋ إضافة صور المركبة", photoHint:"الأمام، الخلف، الجوانب، العجلات، المقصورة ومناطق الضرر",
+    checkBtn:"افحص المركبة — مجاناً", note:"هذا تقييم بصري مبدئي فقط. لا تستطيع سنعية تأكيد سلامة الشاصي أو الهيكل من الصور. يلزم الفحص الفعلي للتأكيد.",
+    reportTitle:"تقرير سنعية لتقييم أضرار المركبة بالذكاء الاصطناعي", overall:"التقييم العام", parts:"تقييم القطع", replace:"قطع تحتاج إلى استبدال", repair:"قطع يمكن إصلاحها", ok:"قطع تبدو سليمة", unknown:"قطع غير ظاهرة / غير معروفة", airbags:"تقييم الوسائد الهوائية / SRS", checksTitle:"الفحوصات الفعلية الموصى بها", limitationsTitle:"القيود", photosTitle:"صور المركبة المرفوعة", clear:"مسح وفحص مركبة أخرى", print:"طباعة / حفظ PDF", continue:"الانتقال إلى الخدمات ↓",
+    servicesEyebrow:"خدمات سنعية للمركبات", servicesTitle1:"هل تعبت من زيارة سنعية", servicesTitle2:"مرة بعد مرة؟", servicesLead:"نقوم بذلك نيابةً عنك.", servicesLead2:"احجز معنا ووفر وقتك.", servicesLead3:"من المزاد إلى عُمان. ومن المستودع إلى الورشة.",
+    auction:"من المزاد", oman:"إلى عُمان", warehouse:"من المستودع إلى القطع", garage:"إلى الورشة", journey1:"معلومات المركبة ورابط المزاد والصور.", journey2:"فحص فعلي بعد وصول المركبة.", journey3:"تأكيد القطع ومقارنة أسعار الموردين.", journey4:"إعداد طلب إصلاح ومقارنة عروض الورش المناسبة.",
+    physical:"الفحص الفعلي", physicalP:"تفحص سنعية الأضرار الظاهرة والقطع المطلوبة وأكواد التشخيص/التشغيل عند توفرها وانحناء الشاصي أو قضبان الهيكل الظاهرة.", physicalL1:"القطع المطلوبة والأضرار الظاهرة", physicalL2:"انحناء الشاصي أو قضيب الهيكل الظاهر", physicalL3:"أكواد التشخيص أو التشغيل عند توفرها", physicalL4:"المفتش يؤكد ما لا يمكن للصور تأكيده", partsService:"قطع الغيار", partsP:"تعرف على قطع الغيار المتوفرة لدى سنعية وراجع نوع القطعة وشروط الضمان قبل الدفع.", partsL1:"أصلي / Genuine / تايوان عند توفره", partsL2:"قطع صينية أو غير أصلية يتم توضيحها", partsL3:"الضمان مذكور في الفاتورة", partsL4:"راجع الفاتورة قبل الدفع", garageQuotes:"عروض الورش", garageP:"استلم عروضاً من ورش سنعية المتخصصة في خدمات ما بعد البيع مع توضيح العمل والضمان.", garageL1:"الورش من فئة ما بعد البيع", garageL2:"ضمان الدهان والعمل يجب أن يكون في الفاتورة", garageL3:"مسؤولية الورشة حسب ما هو مذكور في الفاتورة", garageL4:"راجع الفاتورة قبل الدفع",
+    requestQuote:"طلب عرض سعر", back:"رجوع", continueRequest:"متابعة", serviceNote:"يمكن لسنعية تنسيق رحلة المركبة عبر واتساب. نتائج الذكاء الاصطناعي مبدئية ولا تغني عن الفحص الفعلي.", footer:"© سنعية — من المزاد إلى عُمان. ومن المستودع إلى الورشة.",
+    riskHigh:"توجد أدلة هيكلية ظاهرة وتتطلب فحصاً فعلياً عاجلاً.", riskPossible:"احتمال وجود ضرر هيكلي ظاهر — يلزم الفحص الفعلي.", riskLow:"لم يظهر تشوه هيكلي واضح في الصور المرسلة.", riskUnknown:"المناطق الهيكلية غير ظاهرة بشكل كافٍ للحكم الموثوق من الصور.", damageArea:"منطقة الضرر", noArea:"لم يتم تحديد منطقة ضرر ظاهرة", structuralFindings:"النتائج الهيكلية", structuralFinding:"نتيجة هيكلية", airbagUnknown:"لا يمكن تأكيد حالة الوسائد الهوائية لأن المناطق المطلوبة غير ظاهرة.", defaultCheck1:"إجراء فحص فعلي للشاصي والهيكل.", defaultCheck2:"إجراء فحص تشخيصي لنظام الوسائد الهوائية SRS.", defaultLimit1:"الصور لا تؤكد الأضرار الميكانيكية أو الهيكلية المخفية.", defaultLimit2:"يلزم الفحص الفعلي للتأكيد.",
+    statusReplace:"استبدال", statusRepair:"إصلاح", statusOK:"سليم", statusUnknown:"غير معروف", deployed:"منفتحة", damaged:"متضررة", notVisible:"غير ظاهرة", noDeployment:"لا يوجد انفتاح ظاهر"
+  }
+};
+function t(k){return translations[currentLanguage][k] || translations.en[k] || k;}
+const serviceCopy={physical:{icon:"🔎",title:{en:"Physical Inspection",ar:"الفحص الفعلي"},body:{en:`<p>Sanayya will prepare the inspection request to check:</p><ul><li>Required parts and visible damage</li><li>Visible chassis or frame-rail bending</li><li>Diagnostic/start codes when available</li><li>Items that photos cannot confirm</li></ul><p><strong>Review this, then continue to WhatsApp to book the inspector.</strong></p>`,ar:`<p>تجهز سنعية طلب الفحص للتحقق من:</p><ul><li>القطع المطلوبة والأضرار الظاهرة</li><li>انحناء الشاصي أو قضبان الهيكل الظاهرة</li><li>أكواد التشخيص/التشغيل عند توفرها</li><li>الأمور التي لا يمكن للصور تأكيدها</li></ul><p><strong>راجع المعلومات ثم اضغط متابعة للانتقال إلى واتساب وحجز المفتش.</strong></p>`}},parts:{icon:"🔩",title:{en:"Spare Parts",ar:"قطع الغيار"},body:{en:`<p>Sanayya can provide available spare parts. Before payment, check the invoice to confirm whether each part is:</p><ul><li>Original / Genuine</li><li>Taiwan</li><li>China / non-original</li></ul><p>For China or other non-original parts, any warranty will be stated in the invoice. <strong>Please check the invoice before payment.</strong></p>`,ar:`<p>يمكن لسنعية توفير قطع الغيار المتاحة. قبل الدفع، راجع الفاتورة للتأكد من نوع كل قطعة:</p><ul><li>أصلي / Genuine</li><li>تايوان</li><li>صيني / غير أصلي</li></ul><p>بالنسبة للقطع الصينية أو غير الأصلية، سيكون أي ضمان مذكوراً في الفاتورة. <strong>يرجى مراجعة الفاتورة قبل الدفع.</strong></p>`}},garage:{icon:"🔧",title:{en:"Garage Quotes",ar:"عروض الورش"},body:{en:`<p>Sanayya quotations are from aftermarket garages.</p><ul><li>Check the invoice for paint warranty.</li><li>Check the invoice for work/repair warranty.</li><li>The garage is responsible for what it specifically mentions in the invoice.</li></ul><p><strong>Please check the invoice carefully before payment.</strong></p>`,ar:`<p>عروض سنعية تكون من ورش متخصصة في خدمات ما بعد البيع.</p><ul><li>راجع الفاتورة لضمان الدهان.</li><li>راجع الفاتورة لضمان العمل/الإصلاح.</li><li>مسؤولية الورشة تكون عن الأمور المذكورة بشكل واضح في الفاتورة.</li></ul><p><strong>يرجى مراجعة الفاتورة بعناية قبل الدفع.</strong></p>`}}};
+let activeService=null;
+function openService(type){activeService=type;const x=serviceCopy[type];document.getElementById('serviceModalIcon').textContent=x.icon;document.getElementById('serviceModalTitle').textContent=x.title[currentLanguage];document.getElementById('serviceModalBody').innerHTML=x.body[currentLanguage];document.getElementById('serviceModalAction').textContent=t('continueRequest');document.getElementById('serviceModal').classList.add('show');}
+function closeService(){document.getElementById('serviceModal').classList.remove('show');activeService=null;}
+function confirmService(){const routes=window.SANAYYA_WHATSAPP_ROUTES||{};const key=activeService==='physical'?'physical_inspection':activeService==='parts'?'spare_parts':'garage_quotes';const number=routes[key];const msg={physical:'Hello Sanayya, I want to request a physical vehicle inspection and book the inspector.',parts:'Hello Sanayya, I want to request a spare-parts quote. Please confirm the part type and invoice warranty before payment.',garage:'Hello Sanayya, I want to request garage quotations. Please confirm the work and warranty terms in the invoice.'}[activeService];if(number)window.open(wa(number,currentLanguage==='ar'?({physical:'مرحباً سنعية، أريد طلب فحص فعلي للمركبة وحجز المفتش.',parts:'مرحباً سنعية، أريد طلب عرض سعر لقطع الغيار. أرجو تأكيد نوع القطعة وضمان الفاتورة قبل الدفع.',garage:'مرحباً سنعية، أريد طلب عروض أسعار من الورش. أرجو تأكيد أعمال الإصلاح والضمان في الفاتورة.'}[activeService]):msg),'_blank');else alert(currentLanguage==='ar'?'رقم واتساب غير مضبوط حالياً. يرجى التواصل مع سنعية.':'A WhatsApp service number is not configured yet. Please contact Sanayya.');}
+function applyLanguage(){
+  document.documentElement.lang=currentLanguage;
+  document.documentElement.dir=currentLanguage==='ar'?'rtl':'ltr';
+  const map={
+    'navlinks a:nth-child(1)':'vehicleCheck','navlinks a:nth-child(2)':'services','navlinks a:nth-child(3)':'login',
+    '.lang':'arabic','.details .eyebrow':'eyebrow','.details h1':'__title','.details p':'hero',
+    '.pill:nth-child(1)':'pill1','.pill:nth-child(2)':'pill2','.pill:nth-child(3)':'pill3','.pill:nth-child(4)':'pill4',
+    '.scanner-label':'checkLabel','.free':'free','.scanner h2':'checkTitle','.scanner-intro':'checkIntro',
+    '.field:nth-of-type(1) label':'refLabel','.field:nth-of-type(2) label':'photoLabel','.drop strong':'photoStrong','.drop span':'photoHint',
+    '.primary':'checkBtn','.scanner-note':'note','.report-head h2':'reportTitle',
+    '#report .assessment-box:nth-of-type(1) h3':'overall','#report .assessment-box:nth-of-type(2) h3':'parts','#report .assessment-box:nth-of-type(3) h3':'airbags',
+    '#report .assessment-box:nth-of-type(4) h3':'checksTitle','#report .assessment-box:nth-of-type(5) h3':'limitationsTitle','#photoBox h3':'photosTitle',
+    '.actions .secondary:nth-child(1)':'clear','.actions .secondary:nth-child(2)':'print','.actions .primary':'continue',
+    '.services-intro .eyebrow':'servicesEyebrow','.services-intro h2':'__servicesTitle','.services-intro p strong':'servicesLead',
+    '.services-intro p br + text':'servicesLead2','.service-note':'serviceNote','footer .wrap':'footer',
+    '.step:nth-child(1) strong':'auction','.step:nth-child(2) strong':'oman','.step:nth-child(3) strong':'warehouse','.step:nth-child(4) strong':'garage',
+    '.step:nth-child(1) span':'journey1','.step:nth-child(2) span':'journey2','.step:nth-child(3) span':'journey3','.step:nth-child(4) span':'journey4',
+    '.service:nth-child(1) h3':'physical','.service:nth-child(1) p':'physicalP','.service:nth-child(1) .wa':'book',
+    '.service:nth-child(2) h3':'partsService','.service:nth-child(2) p':'partsP','.service:nth-child(2) .wa':'requestParts',
+    '.service:nth-child(3) h3':'garageQuotes','.service:nth-child(3) p':'garageP','.service:nth-child(3) .wa':'getQuotes'
+  };
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(k)el.textContent=t(k);});
+  for(const [sel,key] of Object.entries(map)){
+    const el=document.querySelector(sel); if(!el) continue;
+    if(key==='__title') el.innerHTML=`${t('title1')}<br><span class="blue">${t('title2')}</span>`;
+    else if(key==='__servicesTitle') el.innerHTML=`${t('servicesTitle1')}<br><span class="blue">${t('servicesTitle2')}</span>`;
+    else if(key==='servicesLead') el.innerHTML=`<strong>${t('servicesLead')}</strong><br>${t('servicesLead2')}<br>${t('servicesLead3')}`;
+    else el.textContent=t(key);
+  }
+  const ref=document.getElementById('ref'); if(ref) ref.placeholder=t('refPlaceholder');
+  const riskEl=document.querySelector('#risk small'); if(riskEl && riskEl.dataset.defaultRisk){ riskEl.textContent=t(riskEl.dataset.defaultRisk); }
+  if(activeService){const x=serviceCopy[activeService];document.getElementById('serviceModalTitle').textContent=x.title[currentLanguage];document.getElementById('serviceModalBody').innerHTML=x.body[currentLanguage];document.getElementById('serviceModalAction').textContent=t('continueRequest');}
+  document.getElementById('langToggle').onclick=(e)=>{e.preventDefault();currentLanguage=currentLanguage==='en'?'ar':'en';localStorage.setItem('sanayya_language',currentLanguage);applyLanguage();};
+}
+
 async function loadWhatsAppRoutes(){
   const fallback="96800000000";
   const routes={physical_inspection:fallback,spare_parts:fallback,garage_quotes:fallback,ai_damage_check:fallback};
@@ -386,10 +449,9 @@ async function loadWhatsAppRoutes(){
     const map=Object.fromEntries(nums.map(x=>[x.id,x]));
     rows.forEach(x=>{ if(routes[x.service_key]!==undefined && map[x.whatsapp_number_id]?.active) routes[x.service_key]=map[x.whatsapp_number_id].phone; });
   }catch(e){ console.warn("WhatsApp routing fallback used",e); }
-  document.getElementById("iwa").href=wa(routes.physical_inspection,"Hello Sanayya, I want to book a physical inspection. Please guide me through the required vehicle details and payment.");
-  document.getElementById("pwa").href=wa(routes.spare_parts,"Hello Sanayya, I need spare-parts prices. I can send my vehicle details, confirmed parts list, inspection report, photos or an existing quotation.");
-  document.getElementById("gwa").href=wa(routes.garage_quotes,"Hello Sanayya, I want a garage quotation. I can send the VIN, vehicle details, damage photos and any AI or physical inspection report.");
+  window.SANAYYA_WHATSAPP_ROUTES=routes;
 }
+applyLanguage();
 loadWhatsAppRoutes();
 
 function photos(){
@@ -420,24 +482,24 @@ function renderAIReport(a,reference){
   document.getElementById("vehicle").textContent=reference||"Vehicle photos";
   document.getElementById("summary").textContent=a.summary||"Preliminary visual assessment of the submitted photographs.";
   const risk=(a.structural_risk||"UNKNOWN").toUpperCase();
-  const riskText={HIGH:"Visible structural evidence requires urgent physical inspection.",POSSIBLE:"Possible visible structural damage — physical inspection required.",LOW:"No visible structural deformation identified in the submitted photos.",UNKNOWN:"Structural areas are not visible enough to make a reliable judgment from photos."}[risk]||"Physical inspection is required.";
-  document.getElementById("risk").innerHTML=`<div class="risk ${risk.toLowerCase()}">STRUCTURAL RISK: ${esc(risk)}<small>${esc(a.structural_note||riskText)}</small></div>`;
+  const riskKey={HIGH:"riskHigh",POSSIBLE:"riskPossible",LOW:"riskLow",UNKNOWN:"riskUnknown"}[risk]||"riskUnknown"; const riskText=t(riskKey);
+  document.getElementById("risk").innerHTML=`<div class="risk ${risk.toLowerCase()}">${currentLanguage==="ar"?"المخاطر الهيكلية":"STRUCTURAL RISK"}: ${esc(risk)}<small data-default-risk="${riskKey}">${esc(a.structural_note||riskText)}</small></div>`;
   const areas=(a.damage_areas||[]).filter(Boolean);
-  document.getElementById("areas").innerHTML=areas.length?areas.map(x=>`<div class="area-card"><strong>Damage area</strong>${esc(x)}</div>`).join(""):`<div class="area-card"><strong>Damage area</strong>No specific visible area reported</div>`;
+  document.getElementById("areas").innerHTML=areas.length?areas.map(x=>`<div class="area-card"><strong>${t("damageArea")}</strong>${esc(x)}</div>`).join(""):`<div class="area-card"><strong>${t("damageArea")}</strong>No specific visible area reported</div>`;
   const findings=(a.structural_findings||[]).map(x=>`<div class="part-card"><span class="part-name">${esc(x.location||x.type||"Structural area")}</span><div class="part-reason"><strong>${esc(x.type||"Structural finding")}</strong> — ${esc(x.finding||"")}</div></div>`).join("");
-  document.getElementById("structuralFindings").innerHTML=findings?`<div class="section-title">Structural findings</div><div class="card-grid">${findings}</div>`:"";
+  document.getElementById("structuralFindings").innerHTML=findings?`<div class="section-title">${t("structuralFindings")}</div><div class="card-grid">${findings}</div>`:"";
   const parts=Array.isArray(a.parts)?a.parts:[];
   const bucket=(st)=>parts.filter(x=>String(x.status||"").toUpperCase()===st);
-  document.getElementById("replaceSection").innerHTML=sectionCards(bucket("REPLACE"),"replace-title","Parts to replace");
-  document.getElementById("repairSection").innerHTML=sectionCards(bucket("REPAIR"),"repair-title","Parts that can be repaired");
-  document.getElementById("okSection").innerHTML=sectionCards(bucket("OK"),"ok-title","Parts that appear OK");
-  document.getElementById("unknownSection").innerHTML=sectionCards(bucket("UNKNOWN"),"unknown-title","Parts that are not visible / unknown");
+  document.getElementById("replaceSection").innerHTML=sectionCards(bucket("REPLACE"),"replace-title",t("replace"));
+  document.getElementById("repairSection").innerHTML=sectionCards(bucket("REPAIR"),"repair-title",t("repair"));
+  document.getElementById("okSection").innerHTML=sectionCards(bucket("OK"),"ok-title",t("ok"));
+  document.getElementById("unknownSection").innerHTML=sectionCards(bucket("UNKNOWN"),"unknown-title",t("unknown"));
   const airbags=Array.isArray(a.airbags)?a.airbags:[];
-  document.getElementById("airbags").innerHTML=airbags.length?`<div class="card-grid">${airbags.map(x=>`<div class="part-card"><span class="part-name">${esc(x.part)}</span><div class="part-reason"><span class="part-status ${statusClass(x.status)}">${esc(x.status)}</span>${esc(x.reason||"")}</div></div>`).join("")}</div>`:`<div class="part-card"><span class="part-name">Airbag / SRS</span><div class="part-reason"><span class="part-status unknown">UNKNOWN</span>Airbag condition cannot be confirmed because the relevant areas are not visible.</div></div>`;
+  document.getElementById("airbags").innerHTML=airbags.length?`<div class="card-grid">${airbags.map(x=>`<div class="part-card"><span class="part-name">${esc(x.part)}</span><div class="part-reason"><span class="part-status ${statusClass(x.status)}">${esc(x.status)}</span>${esc(x.reason||"")}</div></div>`).join("")}</div>`:`<div class="part-card"><span class="part-name">Airbag / SRS</span><div class="part-reason"><span class="part-status unknown">UNKNOWN</span>${t("airbagUnknown")}</div></div>`;
   const checks=(a.recommended_checks||[]).filter(Boolean);
-  document.getElementById("checks").innerHTML=(checks.length?checks:["Perform a physical chassis/frame inspection.","Perform an SRS/airbag diagnostic scan."]).map(x=>`<li>${esc(x)}</li>`).join("");
+  document.getElementById("checks").innerHTML=(checks.length?checks:[t("defaultCheck1"),t("defaultCheck2")]).map(x=>`<li>${esc(x)}</li>`).join("");
   const lim=(a.limitations||[]).filter(Boolean);
-  document.getElementById("limitations").innerHTML=(lim.length?lim:["Photos cannot confirm hidden mechanical or structural damage.","Physical inspection is required for confirmation."]).map(x=>`<li>${esc(x)}</li>`).join("");
+  document.getElementById("limitations").innerHTML=(lim.length?lim:[t("defaultLimit1"),t("defaultLimit2")]).map(x=>`<li>${esc(x)}</li>`).join("");
   document.getElementById("reportPhotos").innerHTML=selectedFiles.map(f=>`<img src="${URL.createObjectURL(f)}" alt="Uploaded vehicle photo">`).join("");
   document.getElementById("photoBox").style.display=selectedFiles.length?"block":"none";
 }
@@ -451,7 +513,7 @@ async function analyze(){
   try{
     const encoded=[];
     for(const f of selectedFiles.slice(0,12)){encoded.push({mime_type:"image/jpeg",base64:await resizeImageForAI(f)})}
-    const r=await fetch(ANALYZE_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},body:JSON.stringify({vin:ref,auction_url:ref,photos:encoded,language:"en"})});
+    const r=await fetch(ANALYZE_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},body:JSON.stringify({vin:ref,auction_url:ref,photos:encoded,language:currentLanguage})});
     const data=await r.json();
     if(!r.ok||!data.success) throw new Error(data.error||"AI analysis failed");
     clearInterval(timer);pt.textContent="Report ready";
