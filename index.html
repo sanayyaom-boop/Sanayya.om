@@ -473,9 +473,11 @@ function resizeImageForAI(file){
 }
 function esc(v){return String(v??"").replace(/[&<>\"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
 function statusClass(s){return String(s||"UNKNOWN").toLowerCase().replaceAll(" ","_");}
+function statusLabel(s){const k=String(s||"UNKNOWN").toUpperCase(); if(currentLanguage!=="ar") return k; return ({REPLACE:t("statusReplace"),REPAIR:t("statusRepair"),OK:t("statusOK"),UNKNOWN:t("statusUnknown"),DEPLOYED:t("deployed"),DAMAGED:t("damaged"),NOT_VISIBLE:t("notVisible"),NO_VISIBLE_DEPLOYMENT:t("noDeployment")})[k]||k;}
+function structuralTypeLabel(s){if(currentLanguage!=="ar") return s||"Structural finding"; return ({CHASSIS:"الشاصي",FRAME_RAIL:"سكة الشاصي",PILLAR:"العمود"})[String(s||"").toUpperCase()]||"نتيجة هيكلية";}
 function sectionCards(items,titleClass,title){
   if(!items.length)return "";
-  const cards=items.map(x=>`<div class="part-card ${statusClass(x.status)}-card"><span class="part-name">${esc(x.part)}</span><div class="part-reason"><span class="part-status ${statusClass(x.status)}">${esc(x.status)}</span>${esc(x.reason||"")}</div></div>`).join("");
+  const cards=items.map(x=>`<div class="part-card ${statusClass(x.status)}-card"><span class="part-name">${esc(x.part)}</span><div class="part-reason"><span class="part-status ${statusClass(x.status)}">${esc(statusLabel(x.status))}</span>${esc(x.reason||"")}</div></div>`).join("");
   return `<div class="section-title ${titleClass}">${title}</div><div class="card-grid">${cards}</div>`;
 }
 function renderAIReport(a,reference){
@@ -485,7 +487,7 @@ function renderAIReport(a,reference){
   const riskKey={HIGH:"riskHigh",POSSIBLE:"riskPossible",LOW:"riskLow",UNKNOWN:"riskUnknown"}[risk]||"riskUnknown"; const riskText=t(riskKey);
   document.getElementById("risk").innerHTML=`<div class="risk ${risk.toLowerCase()}">${currentLanguage==="ar"?"المخاطر الهيكلية":"STRUCTURAL RISK"}: ${esc(risk)}<small data-default-risk="${riskKey}">${esc(a.structural_note||riskText)}</small></div>`;
   const areas=(a.damage_areas||[]).filter(Boolean);
-  document.getElementById("areas").innerHTML=areas.length?areas.map(x=>`<div class="area-card"><strong>${t("damageArea")}</strong>${esc(x)}</div>`).join(""):`<div class="area-card"><strong>${t("damageArea")}</strong>No specific visible area reported</div>`;
+  document.getElementById("areas").innerHTML=areas.length?areas.map(x=>`<div class="area-card"><strong>${t("damageArea")}</strong>${esc(x)}</div>`).join(""):`<div class="area-card"><strong>${t("damageArea")}</strong>${t("noArea")}</div>`;
   const findings=(a.structural_findings||[]).map(x=>`<div class="part-card"><span class="part-name">${esc(x.location||x.type||"Structural area")}</span><div class="part-reason"><strong>${esc(x.type||"Structural finding")}</strong> — ${esc(x.finding||"")}</div></div>`).join("");
   document.getElementById("structuralFindings").innerHTML=findings?`<div class="section-title">${t("structuralFindings")}</div><div class="card-grid">${findings}</div>`:"";
   const parts=Array.isArray(a.parts)?a.parts:[];
@@ -495,7 +497,7 @@ function renderAIReport(a,reference){
   document.getElementById("okSection").innerHTML=sectionCards(bucket("OK"),"ok-title",t("ok"));
   document.getElementById("unknownSection").innerHTML=sectionCards(bucket("UNKNOWN"),"unknown-title",t("unknown"));
   const airbags=Array.isArray(a.airbags)?a.airbags:[];
-  document.getElementById("airbags").innerHTML=airbags.length?`<div class="card-grid">${airbags.map(x=>`<div class="part-card"><span class="part-name">${esc(x.part)}</span><div class="part-reason"><span class="part-status ${statusClass(x.status)}">${esc(x.status)}</span>${esc(x.reason||"")}</div></div>`).join("")}</div>`:`<div class="part-card"><span class="part-name">Airbag / SRS</span><div class="part-reason"><span class="part-status unknown">UNKNOWN</span>${t("airbagUnknown")}</div></div>`;
+  document.getElementById("airbags").innerHTML=airbags.length?`<div class="card-grid">${airbags.map(x=>`<div class="part-card"><span class="part-name">${esc(x.part)}</span><div class="part-reason"><span class="part-status ${statusClass(x.status)}">${esc(statusLabel(x.status))}</span>${esc(x.reason||"")}</div></div>`).join("")}</div>`:`<div class="part-card"><span class="part-name">${currentLanguage==="ar"?"الوسائد الهوائية / SRS":"Airbag / SRS"}</span><div class="part-reason"><span class="part-status unknown">${statusLabel("UNKNOWN")}</span>${t("airbagUnknown")}</div></div>`;
   const checks=(a.recommended_checks||[]).filter(Boolean);
   document.getElementById("checks").innerHTML=(checks.length?checks:[t("defaultCheck1"),t("defaultCheck2")]).map(x=>`<li>${esc(x)}</li>`).join("");
   const lim=(a.limitations||[]).filter(Boolean);
